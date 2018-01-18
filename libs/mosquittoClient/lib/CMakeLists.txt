@@ -7,13 +7,13 @@ include(GNUInstallDirs)
 SET(publicHeaders
     inc/public/iMosquittoClient.h
     inc/public/MosquittoConnection.h
+    inc/public/MosquittoSetting.h
     inc/public/MqttMessage.h
     inc/public/MqttTypes.h
 )
 SET(privateHeaders
     inc/FlexLogger.h
-    inc/MosquittoSetting.h
-    inc/public/MqttUtils.h
+    inc/MqttUtils.h
 )
 SET(privateSources
     src/iMosquittoClient.cpp

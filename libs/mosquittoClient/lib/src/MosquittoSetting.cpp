@@ -39,14 +39,14 @@ namespace rsm {
     namespace conn {
         namespace mqtt {
 
-            MosquittoSetting::MosquittoSetting(mqttStr_t& ipAddress, int port, int qos, int keepAlive)
+            MosquittoSetting::MosquittoSetting(const mqttStr_t& ipAddress, int port, int qos, int keepAlive)
             : m_ipAddress(ipAddress),
             m_port(port),
             m_qos(qos),
             m_keepAlive(keepAlive) {
             }
 
-            void MosquittoSetting::setIpAddress(mqttStr_t& ipAddress) {
+            void MosquittoSetting::setIpAddress(const mqttStr_t& ipAddress) {
                 this->m_ipAddress = ipAddress;
             }
 
@@ -62,7 +62,7 @@ namespace rsm {
                 this->m_keepAlive = keepAlive;
             }
 
-            mqttStr_t& MosquittoSetting::getIpAddress()const {
+            const mqttStr_t& MosquittoSetting::getIpAddress() const {
                 return m_ipAddress;
             }
 

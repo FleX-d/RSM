@@ -44,15 +44,15 @@ namespace rsm {
 
             class MosquittoSetting {
             public:
-                explicit MosquittoSetting(mqttStr_t& ipAddress, int port=1883, int qos=0, int keepAlive=60);
+                explicit MosquittoSetting(const mqttStr_t& ipAddress, int port=1883, int qos=0, int keepAlive=60);
                 virtual ~MosquittoSetting() = default;
                 
-                void setIpAddress(mqttStr_t& ipAddress);
+                void setIpAddress(const mqttStr_t& ipAddress);
                 void setPort(int port);
                 void setQOS(int qos);
                 void setKeepAlive(int keepAlive);
                 
-                mqttStr_t& getIpAddress()const;
+                const mqttStr_t& getIpAddress()const;
                 int getPort() const;
                 int getQOS() const;
                 int getKeepAlive()const;
@@ -61,7 +61,7 @@ namespace rsm {
                 MosquittoSetting& operator=(const MosquittoSetting& orig) = default;
                 
             private:
-                mqttStr_t& m_ipAddress;
+                mqttStr_t m_ipAddress;
                 int m_port;
                 int m_qos;
                 int m_keepAlive;

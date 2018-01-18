@@ -47,8 +47,7 @@ namespace rsm
             iMosquittoClient::iMosquittoClient(const mqttStr_t& id, bool clean_session, const MosquittoSetting& settings)
             : MosquittoConnection(id.c_str(), clean_session)
             {
-                FLEX_LOG_TRACE("iMosquittoClient::iMosquittoClient");
-                connect(settings.getIpAddress().c_str(), settings.getPort(), settings.getKeepAlive());
+                FLEX_LOG_TRACE("iMosquittoClient::iMosquittoClient connect -> ", id, connect(settings.getIpAddress().c_str(), settings.getPort(), settings.getKeepAlive()));
             }
 
             iMosquittoClient::~iMosquittoClient()
@@ -66,10 +65,9 @@ namespace rsm
                     return Success;
                 }
                 return Error;
-
             }
 
-            int iMosquittoClient::subscribeTopic(const mqttStr_t & topic, int qos)
+            int iMosquittoClient::subscribeTopic(const mqttStr_t& topic, int qos)
             {
                 FLEX_LOG_INFO("Subscribing topic! ", topic);
                 int ret = subscribe(NULL, topic.c_str(), qos);
@@ -78,10 +76,9 @@ namespace rsm
                     return Success;
                 }
                 return Error;
-
             }
 
-            int iMosquittoClient::unsubscribeTopic(const mqttStr_t & topic)
+            int iMosquittoClient::unsubscribeTopic(const mqttStr_t& topic)
             {
                 FLEX_LOG_INFO("Unsubscribing topic! ", topic);
                 int ret = unsubscribe(NULL, topic.c_str());
@@ -90,10 +87,9 @@ namespace rsm
                     return Success;
                 }
                 return Error;
-
             }
 
-            int iMosquittoClient::switchTopic(const mqttStr_t& leaveTopic, const mqttStr_t & subTopic, int qos)
+            int iMosquittoClient::switchTopic(const mqttStr_t& leaveTopic, const mqttStr_t& subTopic, int qos)
             {
                 FLEX_LOG_INFO("Changing topic! ");
                 int ret1 = unsubscribe(NULL, leaveTopic.c_str());

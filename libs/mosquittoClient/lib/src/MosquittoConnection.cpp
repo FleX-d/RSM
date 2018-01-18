@@ -66,11 +66,14 @@ namespace rsm {
             void MosquittoConnection::on_message(const struct mosquitto_message * message) {
                 if (message) {
                     FLEX_LOG_INFO("Message delivery success! ", (const char*) message->payload);
-                    //onMessage();
+                    
+                    MqttMessage msg(message->topic, 
+                                std::string((const char*)message->payload, message->payloadlen),
+                                message->mid, message->payloadlen, message->qos, message->retain);
+                    onMessage(msg);
                 } else {
                     FLEX_LOG_ERROR("Message Lost!!");
                 }
-
             }
 
             void MosquittoConnection::on_subscribe(int mid, int qos_count, const int * granted_qos) {

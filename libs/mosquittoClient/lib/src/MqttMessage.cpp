@@ -40,7 +40,7 @@ namespace rsm {
     namespace conn {
         namespace mqtt {
 
-            MqttMessage::MqttMessage(mqttStr_t& topic, const mqttMsg_t& msg, int mid, int payloadlen, int qos, bool retain)
+            MqttMessage::MqttMessage(const mqttStr_t& topic, const mqttMsg_t& msg, int mid, int payloadlen, int qos, bool retain)
             : m_topic(topic),
             m_msg(msg),
             m_mid(mid),
