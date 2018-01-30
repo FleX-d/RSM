@@ -55,6 +55,7 @@ namespace rsm {
                 int unsubscribeTopic(const mqttStr_t& topic);
                 int switchTopic(const mqttStr_t& leaveTopic, const mqttStr_t& subTopic, int qos = 0);
                 const mqttStr_t& getVersion() const;
+            protected:
                 virtual void onMessage(const MqttMessage& msg) = 0;
             private:
                 const mqttStr_t& m_version = "1.0.1";
