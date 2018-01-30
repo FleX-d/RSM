@@ -101,7 +101,7 @@ namespace rsm
                 {
                     return Success;
                 }
-                FLEX_LOG_ERROR("ERROR - cannot change topic!", topic);
+                FLEX_LOG_ERROR("ERROR - cannot change topic!");
                 return Error;
 
             }
