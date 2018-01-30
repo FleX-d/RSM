@@ -2,18 +2,22 @@ cmake_minimum_required(VERSION 3.0)
 project(mosquittoClient VERSION "0.0.1")
 set(PROJECT_DESCRIPTION "mosquitto client")
 
+message(STATUS "***" )
+message(STATUS "* " ${PROJECT_NAME})
+message(STATUS "***")
+
 include(GNUInstallDirs)
 
 SET(publicHeaders
     inc/public/iMosquittoClient.h
     inc/public/MosquittoConnection.h
+    inc/public/MosquittoSetting.h
     inc/public/MqttMessage.h
     inc/public/MqttTypes.h
 )
 SET(privateHeaders
     inc/FlexLogger.h
-    inc/MosquittoSetting.h
-    inc/public/MqttUtils.h
+    inc/MqttUtils.h
 )
 SET(privateSources
     src/iMosquittoClient.cpp
@@ -42,7 +46,7 @@ target_link_libraries(${PROJECT_NAME}
     ${MOSQUITTOPP_LIBRARY}
 )
 
-SET(mosquittoClientPublicInc "${publicHeaders}" PARENT_SCOPE)
+SET(mosquittoClientPublicInc "${mosquittoClient_SOURCE_DIR}/inc/public" PARENT_SCOPE)
 SET(mosquittoClientLib "${PROJECT_NAME}" PARENT_SCOPE)
 
 install(TARGETS ${PROJECT_NAME}

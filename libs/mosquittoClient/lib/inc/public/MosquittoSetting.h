@@ -44,27 +44,30 @@ namespace rsm {
 
             class MosquittoSetting {
             public:
-                explicit MosquittoSetting(mqttStr_t& ipAddress, int port=1883, int qos=0, int keepAlive=60);
+                explicit MosquittoSetting(const mqttStr_t& ipAddress, int port=1883, int qos=0, int keepAlive=60, bool cleanSession=true);
                 virtual ~MosquittoSetting() = default;
                 
-                void setIpAddress(mqttStr_t& ipAddress);
+                void setIpAddress(const mqttStr_t& ipAddress);
                 void setPort(int port);
                 void setQOS(int qos);
+                void setCleanSession(bool cleanSession);
                 void setKeepAlive(int keepAlive);
                 
-                mqttStr_t& getIpAddress()const;
+                const mqttStr_t& getIpAddress()const;
                 int getPort() const;
                 int getQOS() const;
+                bool getCleanSession() const;
                 int getKeepAlive()const;
                 
                 MosquittoSetting(const MosquittoSetting& orig) = default;
                 MosquittoSetting& operator=(const MosquittoSetting& orig) = default;
                 
             private:
-                mqttStr_t& m_ipAddress;
+                mqttStr_t m_ipAddress;
                 int m_port;
                 int m_qos;
                 int m_keepAlive;
+                bool m_cleanSession;
             };
 
         } // namespace mqtt

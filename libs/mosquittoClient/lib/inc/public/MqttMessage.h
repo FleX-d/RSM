@@ -45,22 +45,22 @@ namespace rsm {
 
             class MqttMessage {
             public:
-                explicit MqttMessage(mqttStr_t& topic, const mqttMsg_t& msg, int mid = 0, int payloadlen = 0, int qos = 0, bool retain = false);
+                explicit MqttMessage(const mqttStr_t& topic, const mqttMsg_t& msg, int mid = 0, int payloadlen = 0, int qos = 0, bool retain = false);
                 virtual ~MqttMessage() = default;
 
                 MqttMessage(const MqttMessage& orig) = default;
                 MqttMessage& operator=(const MqttMessage& orig) = default;
 
                 const mqttMsg_t& getMessage() const;
-                const mqttStr_t& getTopic()const;
+                const mqttStr_t& getTopic() const;
                 int getMid() const;
                 int getLengthMessage()const;
                 int getQOS() const;
                 bool getRetain() const;
 
             private:
-                const mqttStr_t& m_topic;
-                const mqttMsg_t& m_msg;
+                const mqttStr_t m_topic;
+                const mqttMsg_t m_msg;
                 int m_mid;
                 int m_payloadlen;
                 int m_qos;

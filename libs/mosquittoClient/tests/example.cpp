@@ -26,42 +26,56 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 /* 
- * File:   iMosquittoClient.h
- * 
+ * File: example.cpp
  * Author: Matus Bodorik
- * 
- * Created on November 10, 2017, 10:07 AM
+ *
+ * Created on January 17, 2018, 2:20 PM
  */
 
-#ifndef IMOSQUITTOCLIENT_H
-#define IMOSQUITTOCLIENT_H
-
-#include "MosquittoConnection.h"
+#include <cstdlib>
+#include <iostream>
+#include <memory>
+#include <chrono>
+#include <thread>
 #include "MqttTypes.h"
 #include "MqttMessage.h"
+#include "iMosquittoClient.h"
+#include "MosquittoSetting.h"
 
-namespace rsm {
-    namespace conn {
-        namespace mqtt {
-            
-            class MosquittoSetting;
-            class iMosquittoClient : public MosquittoConnection {
-            public:
-                iMosquittoClient(const mqttStr_t& id, const MosquittoSetting& settings);
-                virtual ~iMosquittoClient();
+class Client : public rsm::conn::mqtt::iMosquittoClient 
+{
+    public:
+        Client(const rsm::conn::mqtt::mqttStr_t& id, const rsm::conn::mqtt::MosquittoSetting& settings)
+        : iMosquittoClient(id, settings) 
+        {
+        }
 
-                int publishMessage(const MqttMessage& message);
-                int subscribeTopic(const mqttStr_t& topic, int qos = 0);
-                int unsubscribeTopic(const mqttStr_t& topic);
-                int switchTopic(const mqttStr_t& leaveTopic, const mqttStr_t& subTopic, int qos = 0);
-                const mqttStr_t& getVersion() const;
-            protected:
-                virtual void onMessage(const MqttMessage& msg) = 0;
-            private:
-                const mqttStr_t& m_version = "1.0.1";
-            };
-        } // namespace mqtt
-    } // namespace conn
-} // namespace rsm
+        virtual ~Client() 
+        {
+        }
+        
+        virtual void onMessage(const rsm::conn::mqtt::MqttMessage& msg) override 
+        {
+            std::cout << "Client get message ... " << msg.getMessage() << "\n";
+        }
+};
 
-#endif /* IMOSQUITTOCLIENT_H */
+int main(int argc, char** argv) {
+    
+    std::string topic = "test";
+    rsm::conn::mqtt::MosquittoSetting setting("127.0.0.1");
+    
+    auto client1 = std::make_shared<Client>("client1", setting);
+    auto client2 = std::make_shared<Client>("client2", setting);
+    
+    client1->subscribeTopic(topic);
+    std::this_thread::sleep_for(std::chrono::seconds(1));    
+    
+    client2->publishMessage(rsm::conn::mqtt::MqttMessage(topic , " Communication is working! "));
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    
+    client1->unsubscribeTopic(topic);
+
+    return 0;
+}
+
