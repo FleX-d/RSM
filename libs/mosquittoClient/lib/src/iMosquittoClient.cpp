@@ -44,60 +44,64 @@ namespace rsm
         namespace mqtt
         {
 
-            iMosquittoClient::iMosquittoClient(const mqttStr_t& id, bool clean_session, const MosquittoSetting& settings)
-            : MosquittoConnection(id.c_str(), clean_session)
+            iMosquittoClient::iMosquittoClient(const mqttStr_t& id, const MosquittoSetting& settings)
+            : MosquittoConnection(id.c_str(), settings.getCleanSession())
             {
-                FLEX_LOG_TRACE("iMosquittoClient::iMosquittoClient connect -> ", id, connect(settings.getIpAddress().c_str(), settings.getPort(), settings.getKeepAlive()));
+                FLEX_LOG_DEBUG("iMosquittoClient::iMosquittoClient connect -> ", id, connect(settings.getIpAddress().c_str(), settings.getPort(), settings.getKeepAlive()));
             }
 
             iMosquittoClient::~iMosquittoClient()
             {
-                FLEX_LOG_TRACE("iMosquittoClient::~iMosquittoClient");
+                FLEX_LOG_DEBUG("iMosquittoClient::~iMosquittoClient");
                 disconnect();
             }
 
             int iMosquittoClient::publishMessage(const MqttMessage& message)
             {
-                FLEX_LOG_INFO("Publishing message! ", message.getMessage().c_str() , "  length ", message.getMessage().length(), " topic ",  message.getTopic().c_str());
+                FLEX_LOG_DEBUG("Publishing message! ", message.getMessage().c_str() , "  length ", message.getMessage().length(), " topic ",  message.getTopic().c_str());
                 int ret = publish(NULL , message.getTopic().c_str(), message.getMessage().size(), message.getMessage().c_str(), message.getQOS(), message.getRetain());
                 if (ret == MOSQ_ERR_SUCCESS)
                 {
                     return Success;
                 }
+                FLEX_LOG_ERROR("ERROR - cannot publish message!", message.getMessage().c_str() , "  length ", message.getMessage().length(), " topic ",  message.getTopic().c_str());
                 return Error;
             }
 
             int iMosquittoClient::subscribeTopic(const mqttStr_t& topic, int qos)
             {
-                FLEX_LOG_INFO("Subscribing topic! ", topic);
+                FLEX_LOG_DEBUG("Subscribing topic! ", topic);
                 int ret = subscribe(NULL, topic.c_str(), qos);
                 if (ret == MOSQ_ERR_SUCCESS)
                 {
                     return Success;
                 }
+                FLEX_LOG_ERROR("ERROR - cannot subscribe topic!", topic);
                 return Error;
             }
 
             int iMosquittoClient::unsubscribeTopic(const mqttStr_t& topic)
             {
-                FLEX_LOG_INFO("Unsubscribing topic! ", topic);
+                FLEX_LOG_DEBUG("Unsubscribing topic! ", topic);
                 int ret = unsubscribe(NULL, topic.c_str());
                 if (ret == MOSQ_ERR_SUCCESS)
                 {
                     return Success;
                 }
+                FLEX_LOG_ERROR("ERROR - cannot unsubscribe topic!", topic);
                 return Error;
             }
 
             int iMosquittoClient::switchTopic(const mqttStr_t& leaveTopic, const mqttStr_t& subTopic, int qos)
             {
-                FLEX_LOG_INFO("Changing topic! ");
+                FLEX_LOG_DEBUG("Changing topic! ");
                 int ret1 = unsubscribe(NULL, leaveTopic.c_str());
                 int ret2 = subscribe(NULL, subTopic.c_str(), qos);
                 if (ret1 == MOSQ_ERR_SUCCESS && ret2 == MOSQ_ERR_SUCCESS)
                 {
                     return Success;
                 }
+                FLEX_LOG_ERROR("ERROR - cannot change topic!", topic);
                 return Error;
 
             }

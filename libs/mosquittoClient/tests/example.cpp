@@ -45,8 +45,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class Client : public rsm::conn::mqtt::iMosquittoClient 
 {
     public:
-        Client(const rsm::conn::mqtt::mqttStr_t& id, bool clean_session, const rsm::conn::mqtt::MosquittoSetting& settings)
-        : iMosquittoClient(id, clean_session, settings) 
+        Client(const rsm::conn::mqtt::mqttStr_t& id, const rsm::conn::mqtt::MosquittoSetting& settings)
+        : iMosquittoClient(id, settings) 
         {
         }
 
@@ -65,8 +65,8 @@ int main(int argc, char** argv) {
     std::string topic = "test";
     rsm::conn::mqtt::MosquittoSetting setting("127.0.0.1");
     
-    auto client1 = std::make_shared<Client>("client1", true, setting);
-    auto client2 = std::make_shared<Client>("client2", true, setting);
+    auto client1 = std::make_shared<Client>("client1", setting);
+    auto client2 = std::make_shared<Client>("client2", setting);
     
     client1->subscribeTopic(topic);
     std::this_thread::sleep_for(std::chrono::seconds(1));    

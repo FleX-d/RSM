@@ -47,7 +47,7 @@ namespace rsm {
             class MosquittoSetting;
             class iMosquittoClient : public MosquittoConnection {
             public:
-                iMosquittoClient(const mqttStr_t& id, bool clean_session, const MosquittoSetting& settings);
+                iMosquittoClient(const mqttStr_t& id, const MosquittoSetting& settings);
                 virtual ~iMosquittoClient();
 
                 int publishMessage(const MqttMessage& message);

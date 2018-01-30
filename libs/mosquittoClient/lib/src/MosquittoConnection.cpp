@@ -33,6 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * Created on November 16, 2017, 9:31 AM
  */
 
+#include <sys/socket.h>
+
 #include "MosquittoConnection.h"
 #include "FlexLogger.h"
 
@@ -55,7 +57,8 @@ namespace rsm {
                 FLEX_LOG_DEBUG("Connected with code: ", rc);
             }
 
-            void MosquittoConnection::on_disconnect(int rc) {
+            void MosquittoConnection::on_disconnect(int rc) {.
+                // TODO reconnect missing
                 FLEX_LOG_DEBUG("Disconnected");
             }
 
@@ -64,8 +67,8 @@ namespace rsm {
             }
 
             void MosquittoConnection::on_message(const struct mosquitto_message * message) {
-                if (message) {
-                    FLEX_LOG_INFO("Message delivery success! ", (const char*) message->payload);
+                if (message && message->payload != NULL) {
+                    FLEX_LOG_DEBUG("Message delivery success! ", (const char*) message->payload);
                     
                     MqttMessage msg(message->topic, 
                                 std::string((const char*)message->payload, message->payloadlen),
