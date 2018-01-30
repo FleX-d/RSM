@@ -57,7 +57,7 @@ namespace rsm {
                 FLEX_LOG_DEBUG("Connected with code: ", rc);
             }
 
-            void MosquittoConnection::on_disconnect(int rc) {.
+            void MosquittoConnection::on_disconnect(int rc) {
                 // TODO reconnect missing
                 FLEX_LOG_DEBUG("Disconnected");
             }
