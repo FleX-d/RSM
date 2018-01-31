@@ -21,3 +21,4 @@ option(
 message(STATUS "option ENABLE_TESTS=" ${ENABLE_TESTS})
 
 add_subdirectory(libs)
+add_subdirectory(apps)
