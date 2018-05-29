@@ -41,9 +41,9 @@ namespace rsm {
             
             MCNewClientRequest::MCNewClientRequest(std::function<void(const std::string&)> onMessage, const std::string& id,
                                  const std::string& externID, const std::string& requester, const std::string& ipAddress,
-                                 const std::string& topic, const DirectionType direction, bool cleanSession, int port, int qos, int keepAlive)
+                                 const std::string& topic, const DirectionType::Enum direction, bool cleanSession, int port, int qos, int keepAlive)
             : m_onMessage(onMessage),
-              m_clientID(id, externID, requester, topic, ipAddress, port),
+              m_clientID(id, externID, requester, topic),
               m_direction(direction),
               m_settings(ipAddress, port, qos, keepAlive, cleanSession)
             {
@@ -61,25 +61,13 @@ namespace rsm {
                 this->m_settings.setQOS(qos);
                 this->m_settings.setKeepAlive(keepAlive);
                 this->m_settings.setCleanSession(cleanSession);
-                if (m_settings.getIpAddress() == ipAddress && 
-                    m_settings.getPort() == port && 
-                    m_settings.getQOS() == qos && 
-                    m_settings.getKeepAlive() == keepAlive && 
-                    m_settings.getCleanSession() == cleanSession)
-                {
-                    return true;
-                }
-                return false;
+                return true;
             }
 
-            bool MCNewClientRequest::setDirection(const DirectionType type)
+            bool MCNewClientRequest::setDirection(const DirectionType::Enum type)
             {
                 this->m_direction = type;
-                if (m_direction == type)
-                {
-                    return true;
-                }
-                return false;
+                return true;
             }
 
             const rsm::conn::mqtt::MosquittoSetting& MCNewClientRequest::getSettings() const
@@ -87,7 +75,7 @@ namespace rsm {
                 return m_settings;
             }
 
-            const DirectionType MCNewClientRequest::getDirection() const
+            const DirectionType::Enum MCNewClientRequest::getDirection() const
             {
                 return m_direction;
             }
@@ -97,7 +85,7 @@ namespace rsm {
                 return m_clientID;
             }
 
-            std::function<void(const std::string&) > MCNewClientRequest::getOnMessage() const
+            std::function<void(const std::string&)> MCNewClientRequest::getOnMessage() const
             {
                 return m_onMessage;
             }

@@ -65,7 +65,6 @@ namespace rsm {
                 this->m_cleanSession = cleanSession;
             }
 
-
             void MosquittoSetting::setKeepAlive(int keepAlive) {
                 this->m_keepAlive = keepAlive;
             }
@@ -86,7 +85,6 @@ namespace rsm {
             {
                 return m_cleanSession;
             }
-
 
             int MosquittoSetting::getKeepAlive()const {
                 return m_keepAlive;

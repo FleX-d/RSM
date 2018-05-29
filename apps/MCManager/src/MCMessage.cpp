@@ -41,8 +41,9 @@ namespace rsm {
             {
             }
 
-            MCMessage::MCMessage(const std::string& id, const std::string& requester, const std::string& payload) :
+            MCMessage::MCMessage(const std::string& id, const std::string& topic, const std::string& requester, const std::string& payload) :
             m_ID(id),
+            m_topic(topic),
             m_requester(requester),
             m_payload(payload)
             {
@@ -65,6 +66,16 @@ namespace rsm {
             const std::string& MCMessage::getRequester() const
             {
                 return m_requester;
+            }
+            
+            const std::string& MCMessage::getTopic() const
+            {
+                return m_topic;
+            }
+            
+            void MCMessage::setTopic(const std::string& topic)
+            {
+                this->m_topic = topic;
             }
 
             void MCMessage::setID(const std::string& id)

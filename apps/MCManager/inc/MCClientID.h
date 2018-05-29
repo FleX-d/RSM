@@ -45,8 +45,7 @@ namespace rsm {
             public:
                 MCClientID();
                 MCClientID(const std::string& id, const std::string& externalID,
-                           const std::string& requester, const std::string& topic,
-                           const std::string& ipAddress, const uint port);
+                           const std::string& requester, const std::string& topic);
                 
                 MCClientID(const std::string& id, const std::string& externalID, 
                            const std::string& requester, const std::string& topic, 

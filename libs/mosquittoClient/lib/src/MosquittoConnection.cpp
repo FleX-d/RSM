@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/socket.h>
 
 #include "MosquittoConnection.h"
-#include "FlexLogger.h"
+#include "FleXdLogger.h"
 
 namespace rsm {
     namespace conn {
@@ -46,53 +46,60 @@ namespace rsm {
             : mosquittopp(id.c_str(), clean_session) {
                 mosqpp::lib_init();
                 loop_start();
+                FLEX_LOG_TRACE("MosquittoConnection::MosquittoConnection() -> Start");
             }
 
             MosquittoConnection::~MosquittoConnection() {
                 mosqpp::lib_cleanup();
                 loop_stop();
+                FLEX_LOG_TRACE("MosquittoConnection::~MosquittoConnection() -> Destroyed");
             }
 
             void MosquittoConnection::on_connect(int rc) {
-                FLEX_LOG_DEBUG("Connected with code: ", rc);
+                FLEX_LOG_TRACE("MosquittoConnection::on_connect() -> Try connect: ", rc);
             }
 
             void MosquittoConnection::on_disconnect(int rc) {
-                // TODO reconnect missing
-                FLEX_LOG_DEBUG("Disconnected");
+                if(rc)
+                {
+                    FLEX_LOG_TRACE("MosquittoConnection::on_disconnect() -> Disconnect, try reconnect ASAP: ", rc);
+                    reconnect_async();
+                    onRecon();
+                } else {
+                    FLEX_LOG_TRACE("MosquittoConnection::on_disconnect() -> Try Disconnect: ", rc);
+                }
             }
 
             void MosquittoConnection::on_publish(int mid) {
-                FLEX_LOG_DEBUG("Publishing: ", mid);
+                FLEX_LOG_TRACE("MosquittoConnection::on_publish() -> Try Publish: ", mid);
             }
 
             void MosquittoConnection::on_message(const struct mosquitto_message * message) {
                 if (message && message->payload != NULL) {
-                    FLEX_LOG_DEBUG("Message delivery success! ", (const char*) message->payload);
-                    
+                    FLEX_LOG_DEBUG("MosquittoConnection::on_message() -> Message delivery Success! ", (const char*) message->payload);
                     MqttMessage msg(message->topic, 
                                 std::string((const char*)message->payload, message->payloadlen),
                                 message->mid, message->payloadlen, message->qos, message->retain);
                     onMessage(msg);
                 } else {
-                    FLEX_LOG_ERROR("Message Lost!!");
+                    FLEX_LOG_ERROR("MosquittoConnection::on_message() -> Error: Message delivery Fail!");
                 }
             }
 
             void MosquittoConnection::on_subscribe(int mid, int qos_count, const int * granted_qos) {
-                FLEX_LOG_INFO("Subscription succeeded! ", mid);
+                FLEX_LOG_TRACE("MosquittoConnection::on_subscribe() -> Try Subscribe: ", mid);
             }
 
             void MosquittoConnection::on_unsubscribe(int mid) {
-                FLEX_LOG_DEBUG("Unsubscribing! ", mid);
+                FLEX_LOG_TRACE("MosquittoConnection::on_unsubscribe() -> Try Unsubscribe: ", mid);
             }
 
             void MosquittoConnection::on_log(int level, const char* str) {
-                FLEX_LOG_DEBUG(str);
+                FLEX_LOG_TRACE("MosquittoConnection::on_log() -> Log Level: ", level, " , ", str);
             }
 
             void MosquittoConnection::on_error() {
-                FLEX_LOG_ERROR("Error - something is wrong!!!");
+                FLEX_LOG_ERROR("MosquittoConnection::on_error() -> Error!");
             }
         } // namespace mqtt
     } // namespace conn

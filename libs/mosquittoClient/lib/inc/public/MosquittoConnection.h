@@ -54,6 +54,7 @@ namespace rsm {
 
             protected:
                 virtual void onMessage(const MqttMessage& msg) = 0;
+                virtual void onRecon() = 0;
 
             private:
                 virtual void on_connect(int rc) override;

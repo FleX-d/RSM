@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <memory>
+#include "FleXdLogger.h"
 #include "MCTypes.h"
 #include "MCManager.h"
 
@@ -41,81 +42,101 @@ namespace rsm {
 
             MCManager::MCManager()
             {
+                FLEX_LOG_INIT("MCManager");
+                FLEX_LOG_INFO("MCManager -> Start");
             }
 
             MCManager::~MCManager()
             {
+                FLEX_LOG_TRACE("MCManager::~MCManager() -> Destroyed");
             }
 
             MCRequestAck MCManager::addClient(const MCNewClientRequest& request)
             {
                 auto it = m_clientMap.find(request.getClientID().getUniqueID());
                 MCRequestAck ack;
-
+                ack.setID(request.getClientID().getID());
                 if (it == m_clientMap.end())
                 {
-                    std::shared_ptr<MCClient> client = m_factory.createClient(request);
-                    m_clientMap.insert(std::pair<std::string, std::shared_ptr < MCClient >> (client->getClientID().getUniqueID(), client));
-                    ack.setAck(Success);
-                    ack.setID(client->getClientID().getID());
-                    return ack;
+                    std::shared_ptr<MCClient> client = std::make_shared<MCClient>(request);
+                    if(client)
+                    {
+                        m_clientMap.insert(std::pair<std::string, std::shared_ptr < MCClient >> (client->getClientID().getUniqueID(), client));
+                        ack.setAck(RequestAckType::Success);
+                        FLEX_LOG_TRACE("MCManager::addClient() -> Client create Success!");
+                    } else {
+                        ack.setAck(RequestAckType::Fail);
+                        FLEX_LOG_WARN("MCFactory::createClient() -> Client create Fail!");
+                    }
+                } else {
+                    ack.setAck(RequestAckType::ClientExist);
+                    FLEX_LOG_WARN("MCManager::addClient() -> Client with ID is already exist");
                 }
-                ack.setAck(ClientExist);
-                ack.setID(request.getClientID().getID());
-                return ack;
+                return std::move(ack);
             }
 
             MCRequestAck MCManager::runClient(const MCOperationRequest& request)
             {
+                std::string uniqueID = request.getID() + request.getRequester();
+                auto it = m_clientMap.find(uniqueID);
                 MCRequestAck ack;
-                std::string unique = request.getID() + request.getRequester();
-                auto it = m_clientMap.find(unique);
-                
                 if (it != m_clientMap.end())
                 {
-                    if (request.getOperationRequest() == Subscribe)
+                    ack.setID(it->second->getClientID().getID());
+                    if (request.getOperationRequestType() == OperationRequestType::Subscribe)
                     {
                         if(it->second->subscribe())
                         {
-                            ack.setAck(Success);
-                            ack.setID(it->second->getClientID().getID());
-                            return ack;
+                            ack.setAck(RequestAckType::Success);
+                            FLEX_LOG_TRACE("MCManager::runClient() -> Client Subscribe Success!");
+                        } else {
+                            ack.setAck(RequestAckType::Fail);
+                            FLEX_LOG_ERROR("MCManager::runClient() -> Client Subscribe Fail!");
                         }
-                    } else if (request.getOperationRequest() == Unsubscribe)
+                    } else if (request.getOperationRequestType() == OperationRequestType::Unsubscribe)
                     {
                         if(it->second->unsubscribe())
                         {
-                            ack.setAck(Success);
-                            ack.setID(it->second->getClientID().getID());
-                            return ack;
+                            ack.setAck(RequestAckType::Success);
+                            FLEX_LOG_TRACE("MCManager::runClient() -> Client Unsubscribe Success!");
+                        } else {
+                            ack.setAck(RequestAckType::Fail);
+                            FLEX_LOG_ERROR("MCManager::runClient() -> Client Unsubscribe Fail!");
                         }
                     }
+                } else {
+                    ack.setAck(RequestAckType::ClientNotExist);
+                    FLEX_LOG_WARN("MCManager::runClient() -> Client with ID is not exist");
                 }
-                ack.setAck(Fail);
-                ack.setID(it->second->getClientID().getID());
-                return ack;
+                return std::move(ack);
             }
 
 
-            MCRequestAck MCManager::clientPublish(const MCMessage& message)
+            MCRequestAck MCManager::publish(const MCMessage& message)
             {
                 MCRequestAck ack;
-                std::string unique = message.getID() + message.getRequester();
-                auto it = m_clientMap.find(unique);
+                std::string uniqueID = message.getID() + message.getRequester();
+                auto it = m_clientMap.find(uniqueID);
                 
                 if (it != m_clientMap.end())
                 {
+                    ack.setID(it->second->getClientID().getID());
                     if(it->second->send(message))
                     {
-                        ack.setAck(Success);
-                        ack.setID(it->second->getClientID().getID());
-                        return ack;
+                        ack.setAck(RequestAckType::Success);
+                        FLEX_LOG_TRACE("MCManager::clientPublish() -> Client Publish Success!");
+                    } else {
+                        ack.setAck(RequestAckType::Fail);
+                        FLEX_LOG_ERROR("MCManager::clientPublish() -> Client Publish Fail!");
                     }
+                } else 
+                {
+                    ack.setAck(RequestAckType::ClientNotExist);
+                    FLEX_LOG_WARN("MCManager::clientPublish() -> Client with ID is not exist");
                 }
-                ack.setAck(Fail);
-                ack.setID(it->second->getClientID().getID());
-                return ack;
+                return std::move(ack);
             }
+            
         }
     }
 }

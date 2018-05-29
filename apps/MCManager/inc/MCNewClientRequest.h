@@ -52,26 +52,54 @@ namespace rsm {
                  * @param id -Hash code ID for Client 
                  * @param externID - external name for CLient
                  * @param requester - internal name of application which request for mqtt communication
-                 * @param ipAddress - ip address for set communication
+                 * @param ipAddress - ip address for communication
                  * @param topic - name of topic where client want to be connect
                  * @param direction - direction of communication |IN|OUT|BOTH|
                  * @param cleanSession  -|TRUE|FALSE|, true = default
-                 * @param port - port for set communication, 1883 = default   
+                 * @param port - port for communication, 1883 = default   
                  * @param qos - Quality of service, 0 = default 
                  * @param keepAlive - Keep Alive, 60 = default 
                  */
                 MCNewClientRequest(std::function<void(const std::string&)> onMessage, const std::string& id,
                           const std::string& externID, const std::string& requester, const std::string& ipAddress,
-                          const std::string& topic, const DirectionType direction, bool cleanSession = true,
+                          const std::string& topic, const DirectionType::Enum direction, bool cleanSession = true,
                           int port = 1883, int qos = 0, int keepAlive = 60);
                 virtual ~MCNewClientRequest();
-
+                /**
+                 * Function to set parameters to Mosquitto settings
+                 * @param ipAddress -Ip address for communication 
+                 * @param port -  port for communication, 1883 = default   
+                 * @param qos - Quality of service, 0 = default 
+                 * @param keepAlive - Keep Alive, 60 = default 
+                 * @param cleanSession - |TRUE|FALSE|, true = default
+                 * @return true if set parameters
+                 */
                 bool setSettings(const std::string& ipAddress, const int port, const int qos, const int keepAlive, const bool cleanSession);
-                bool setDirection(const DirectionType type);
+                /**
+                 * Function to set direction of communication
+                 * @param type - type of direction |IN|OUT|BOTH|
+                 * @return true if set direction
+                 */
+                bool setDirection(const DirectionType::Enum type);
+                /**
+                 * Function return const reference to Mosquitto settings
+                 * @return const reference to Mosquitto settings
+                 */
                 const rsm::conn::mqtt::MosquittoSetting& getSettings() const;
-                const DirectionType getDirection() const;
+                /**
+                 * Function return type of direction    
+                 * @return type of direction |IN|OUT|BOTH|
+                 */
+                const DirectionType::Enum getDirection() const;
+                /**
+                 * Function return client identifiers 
+                 * @return reference to MCClientID which contains topic, id, requester and externalID 
+                 */
                 const MCClientID& getClientID() const;
-                
+                /**
+                 * Function return lambda function onMessage
+                 * @return return lambda function onMessage
+                 */
                 std::function<void(const std::string&)> getOnMessage() const ;
  
                 MCNewClientRequest(const MCNewClientRequest& orig) = delete;
@@ -80,11 +108,8 @@ namespace rsm {
             private:
                 std::function<void(const std::string&)> m_onMessage;
                 MCClientID m_clientID;
-                DirectionType m_direction;
+                DirectionType::Enum m_direction;
                 rsm::conn::mqtt::MosquittoSetting m_settings;
-                
-
-
             };
         }
     }

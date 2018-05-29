@@ -43,12 +43,14 @@ namespace rsm {
             class MCMessage {
             public:
                 MCMessage();
-                MCMessage(const std::string& id, const std::string& requester, const std::string& payload);
+                MCMessage(const std::string& id, const std::string& topic, const std::string& requester, const std::string& payload);
                 virtual ~MCMessage();
                 
                 void setPayload(const std::string& payload);
                 void setID(const std::string& id);
                 void setRequester(const std::string& requester);
+                void setTopic(const std::string& topic);
+                const std::string& getTopic() const;
                 const std::string& getPayload() const;
                 const std::string& getID() const;
                 const std::string& getRequester() const;
@@ -58,8 +60,10 @@ namespace rsm {
                 
             private:
                 std::string m_ID;
+                std::string m_topic;
                 std::string m_requester;
                 std::string m_payload;
+                
             };
         }
     }

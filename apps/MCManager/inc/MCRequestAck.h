@@ -45,19 +45,18 @@ namespace rsm {
             public:
                 
                 MCRequestAck();
-                MCRequestAck(const std::string& id, const RequestAckType type);
+                MCRequestAck(const std::string& id, const RequestAckType::Enum type);
                 virtual ~MCRequestAck();
                 
-                void setAck(const RequestAckType ack);
+                void setAck(const RequestAckType::Enum ack);
                 void setID(const std::string& id);
                 const std::string& getID()const;
-                const RequestAckType getAck() const;
+                const RequestAckType::Enum getAck() const;
                 
-                MCRequestAck(const MCRequestAck& orig);
-                
+                MCRequestAck(const MCRequestAck& orig); 
             private:
                 std::string m_ID;
-                RequestAckType m_ack;
+                RequestAckType::Enum m_ack;
             };
         }
     }

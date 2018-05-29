@@ -61,6 +61,8 @@ namespace rsm {
                 
             protected:
                 virtual void onMessage(const rsm::conn::mqtt::MqttMessage& msg) override;
+                virtual void onRecon() override;
+
 
             private:
                 MCClientID m_clientID;

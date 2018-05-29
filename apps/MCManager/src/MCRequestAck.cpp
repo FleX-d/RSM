@@ -37,24 +37,28 @@ namespace rsm {
         namespace com {
 
             MCRequestAck::MCRequestAck()
+            : m_ID(""),
+            m_ack(RequestAckType::Success)
             {
             }
             
-            MCRequestAck::MCRequestAck(const std::string& id, const RequestAckType type) :
-            m_ID(id),
+            MCRequestAck::MCRequestAck(const std::string& id, const RequestAckType::Enum type) 
+            : m_ID(id),
             m_ack(type)
+            {
+            }
+            
+            MCRequestAck::~MCRequestAck()
             {
             }
             
             MCRequestAck::MCRequestAck(const MCRequestAck& orig)
             {
+                m_ID = orig.m_ID;
+                m_ack = orig.m_ack;
             }
 
-            MCRequestAck::~MCRequestAck()
-            {
-            }
-
-            const RequestAckType MCRequestAck::getAck() const
+            const RequestAckType::Enum MCRequestAck::getAck() const
             {
                 return m_ack;
             }
@@ -64,7 +68,7 @@ namespace rsm {
                 return m_ID;
             }
 
-            void MCRequestAck::setAck(const RequestAckType ack)
+            void MCRequestAck::setAck(const RequestAckType::Enum ack)
             {
                 this->m_ack = ack;
             }

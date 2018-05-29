@@ -42,9 +42,8 @@ namespace rsm {
             }
 
             MCClientID::MCClientID(const std::string& id, const std::string& externalID, 
-                                   const std::string& requester, const std::string& topic, 
-                                   const std::string& ipAddress, const uint port) :
-            m_ID(id),
+                                   const std::string& requester, const std::string& topic) 
+            : m_ID(id),
             m_externalID(externalID),
             m_requester(requester),
             m_topic(topic),
@@ -54,8 +53,8 @@ namespace rsm {
 
             MCClientID::MCClientID(const std::string& id, const std::string& externalID, 
                                    const std::string& requester, const std::string& topic, 
-                                   const std::string& uniqueID) :
-            m_ID(id),
+                                   const std::string& uniqueID) 
+            : m_ID(id),
             m_externalID(externalID),
             m_requester(requester),
             m_topic(topic),

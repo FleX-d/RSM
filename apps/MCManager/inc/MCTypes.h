@@ -40,23 +40,30 @@ namespace rsm {
     namespace msq {
         namespace com {
 
-            enum OperationRequestType{
-                Subscribe,
-                Unsubscribe
-            };
-            
-            enum RequestAckType{
-                Success = 0x01,
-                Fail = 0x00,
-                ClientExist = 0x02,
-                UndefinedError = 0xFF
-            };
-            
-            enum DirectionType {
-                IN,
-                OUT,
-                BOTH
-            };
+            namespace OperationRequestType {
+                enum Enum {
+                    Subscribe,
+                    Unsubscribe
+                };
+            }
+
+            namespace RequestAckType {
+                enum Enum {
+                    Success = 0x01,
+                    Fail = 0x00,
+                    ClientExist = 0x02,
+                    ClientNotExist = 0x03,
+                    UndefinedError = 0xFF
+                };
+            }
+
+            namespace DirectionType {
+                enum Enum {
+                    IN,
+                    OUT,
+                    BOTH
+                };
+            }
         }
     }
 }

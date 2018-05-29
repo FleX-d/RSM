@@ -11,8 +11,6 @@ include(GNUInstallDirs)
 SET(privateHeaders
     inc/MCClient.h
     inc/MCClientID.h
-    inc/MCConfig.h
-    inc/MCFactory.h
     inc/MCManager.h
     inc/MCMessage.h
     inc/MCNewClientRequest.h
@@ -25,8 +23,6 @@ SET(privateSources
     src/main.cpp
     src/MCClient.cpp
     src/MCClientID.cpp
-    src/MCConfig.cpp
-    src/MCFactory.cpp
     src/MCManager.cpp
     src/MCMessage.cpp
     src/MCNewClientRequest.cpp

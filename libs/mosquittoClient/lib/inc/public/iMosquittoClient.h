@@ -39,6 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "MosquittoConnection.h"
 #include "MqttTypes.h"
 #include "MqttMessage.h"
+#include <atomic>
 
 namespace rsm {
     namespace conn {
@@ -55,9 +56,12 @@ namespace rsm {
                 int unsubscribeTopic(const mqttStr_t& topic);
                 int switchTopic(const mqttStr_t& leaveTopic, const mqttStr_t& subTopic, int qos = 0);
                 const mqttStr_t& getVersion() const;
+                
             protected:
+                virtual void onRecon() = 0;
                 virtual void onMessage(const MqttMessage& msg) = 0;
             private:
+                std::atomic<bool> m_connected; 
                 const mqttStr_t& m_version = "1.0.1";
             };
         } // namespace mqtt

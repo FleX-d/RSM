@@ -35,10 +35,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define MCMANAGER_H
 
 #include <map>
-#include "MCFactory.h"
 #include "MCRequestAck.h"
 #include "MCOperationRequest.h"
 #include "MCMessage.h"
+#include "MCClient.h"
+#include <memory>
 
 
 namespace rsm {
@@ -52,13 +53,12 @@ namespace rsm {
                 
                 MCRequestAck addClient(const MCNewClientRequest& request);
                 MCRequestAck runClient(const MCOperationRequest& request);
-                MCRequestAck clientPublish(const MCMessage& message);
+                MCRequestAck publish(const MCMessage& message);
                 
                 MCManager(const MCManager& orig) = delete;
                 MCManager& operator= (const MCManager& orig) = delete;
                 
             private:
-                MCFactory m_factory;
                 std::map <std::string , std::shared_ptr<MCClient>> m_clientMap; // TODO replace std::string key with MCClientID
             };
         }

@@ -43,14 +43,26 @@ namespace rsm {
 
             class MCOperationRequest {
             public:
+                /**
+                 * Empty constructor 
+                 */
                 MCOperationRequest();
-                MCOperationRequest(const std::string& id, const std::string& requester, const OperationRequestType type);
+                /**
+                 * Constructor for create operation request
+                 * @param id - id of CLient 
+                 * @param requester - internal name of application which request for mqtt communication
+                 * @param type - type of operation request |Subscribe|Unsubscribe|
+                 */
+                MCOperationRequest(const std::string& id, const std::string& requester, const OperationRequestType::Enum type);
                 virtual ~MCOperationRequest();
                 
-                const OperationRequestType getOperationRequest() const;
+                /**
+                 * Geters and seters for operation request
+                 */
+                const OperationRequestType::Enum getOperationRequestType() const;
                 const std::string& getID() const;
                 const std::string& getRequester() const;
-                void setOperationRequest(const OperationRequestType type); 
+                void setOperationRequestType(const OperationRequestType::Enum type); 
                 void setID(const std::string& id);
                 void setRequester(const std::string& requester);
                 
@@ -60,7 +72,7 @@ namespace rsm {
                 
                 std::string m_ID;
                 std::string m_requester;
-                OperationRequestType m_operationRequest;
+                OperationRequestType::Enum m_operationRequestType;
                 
                 
             };

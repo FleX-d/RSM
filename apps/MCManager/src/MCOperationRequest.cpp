@@ -41,10 +41,10 @@ namespace rsm {
             {
             }
 
-            MCOperationRequest::MCOperationRequest(const std::string& id, const std::string& requester, const OperationRequestType type) :
+            MCOperationRequest::MCOperationRequest(const std::string& id, const std::string& requester, const OperationRequestType::Enum type) :
             m_ID(id),
             m_requester(requester),
-            m_operationRequest(type)
+            m_operationRequestType(type)
             {
             }
 
@@ -57,9 +57,9 @@ namespace rsm {
                 return m_ID;
             }
 
-            const OperationRequestType MCOperationRequest::getOperationRequest() const
+            const OperationRequestType::Enum MCOperationRequest::getOperationRequestType() const
             {
-                return m_operationRequest;
+                return m_operationRequestType;
             }
 
             const std::string& MCOperationRequest::getRequester() const
@@ -72,9 +72,9 @@ namespace rsm {
                 this->m_ID = id;
             }
 
-            void MCOperationRequest::setOperationRequest(const OperationRequestType type)
+            void MCOperationRequest::setOperationRequestType(const OperationRequestType::Enum type)
             {
-                this->m_operationRequest = type;
+                this->m_operationRequestType = type;
             }
 
             void MCOperationRequest::setRequester(const std::string& requester)

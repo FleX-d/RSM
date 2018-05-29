@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include "MCClient.h"
+#include "FleXdLogger.h"
 #include "MqttTypes.h"
 
 
@@ -49,48 +50,59 @@ namespace rsm {
                        request.getClientID().getUniqueID()), 
             m_onMessage(request.getOnMessage())
             {
+                FLEX_LOG_INIT("MCClient");
+                FLEX_LOG_TRACE("MCClient -> Create");
             }
 
             MCClient::~MCClient()
             {
+                FLEX_LOG_TRACE("MCClient:~MCClient() -> Destroyed");
             }
 
             bool MCClient::send(const MCMessage& message)
             {
-                std::cout << "Sending Message..." <<std::endl;
-                int temp = this->publishMessage(rsm::conn::mqtt::MqttMessage(m_clientID.getTopic() , message.getPayload()));
+                int temp = this->publishMessage(rsm::conn::mqtt::MqttMessage(message.getTopic() , message.getPayload()));
                 if(temp == 0)
                 {
+                    FLEX_LOG_TRACE("MCClient:send() -> Message send Success!");
                     return true;
                 }
+                FLEX_LOG_WARN("MCClient:send() -> Message send Fail!");
                 return false;
             }
 
             bool MCClient::subscribe()
             {
-                std::cout << "Subscribing...."<< std::endl;
                 int temp = this->subscribeTopic(m_clientID.getTopic());
                 if(temp == 0)
                 {
+                    FLEX_LOG_TRACE("MCClient:subscribe() -> Subscribe Success!");
                     return true;
                 }
+                FLEX_LOG_ERROR("MCClient:subscribe() -> Subscribe Fail!");
                 return false;
             }
 
             bool MCClient::unsubscribe()
             {
-                std::cout << "Unsubscribing...."<< std::endl;
                 int temp = this->unsubscribeTopic(m_clientID.getTopic());
                 if(temp == 0)
                 {
+                    FLEX_LOG_TRACE("MCClient:unsubscribe() -> Unsubscribe Success!");
                     return true;
                 }
+                FLEX_LOG_ERROR("MCClient:unsubscribe() -> Unsubscribe Fail!");
                 return false;
             }
 
             void MCClient::onMessage(const rsm::conn::mqtt::MqttMessage& msg)
             {
                 m_onMessage(msg.getMessage());
+            }
+            
+            void MCClient::onRecon()
+            {
+                this->subscribeTopic(m_clientID.getTopic());
             }
 
             const MCClientID& MCClient::getClientID() const
