@@ -51,10 +51,10 @@ namespace rsm
                 int ret = connect(settings.getIpAddress().c_str(), settings.getPort(), settings.getKeepAlive());
                 if(ret == MOSQ_ERR_SUCCESS)
                 {
-                    FLEX_LOG_INFO("iMosquittoClient::connect() -> Connect Success!");
+                    FLEX_LOG_INFO("iMosquittoClient::connect() -> Client: ", id ," connect Success! Port: ", settings.getPort(), ", IP Address ", settings.getIpAddress());
                     m_connected = true;
                 } else {
-                    FLEX_LOG_ERROR("iMosquittoClient::connect() -> Connect Fail!");
+                    FLEX_LOG_ERROR("iMosquittoClient::connect() -> Client: ", id ," connect Fail! Port: ", settings.getPort(), ", IP Address ", settings.getIpAddress());
                     m_connected = false;
                     //reconnect_async();
                 }
@@ -74,7 +74,7 @@ namespace rsm
                     FLEX_LOG_DEBUG("iMosquittoClient::publishMessage() -> Publish message Success: ", message.getMessage().c_str() , "  length ", message.getMessage().length(), " topic ",  message.getTopic().c_str());
                     return Success;
                 }
-                FLEX_LOG_ERROR("iMosquittoClient::publishMessage() -> Error: Publish message Fail!", message.getMessage().c_str() , "  length ", message.getMessage().length(), " topic ",  message.getTopic().c_str());
+                FLEX_LOG_ERROR("iMosquittoClient::publishMessage() -> Error: Publish message Fail! ", message.getMessage().c_str() , "  length ", message.getMessage().length(), " topic ",  message.getTopic().c_str());
                 return Error;
             }
 

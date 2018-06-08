@@ -42,8 +42,6 @@ namespace rsm {
 
             MCManager::MCManager()
             {
-                FLEX_LOG_INIT("MCManager");
-                FLEX_LOG_INFO("MCManager -> Start");
             }
 
             MCManager::~MCManager()
@@ -63,14 +61,14 @@ namespace rsm {
                     {
                         m_clientMap.insert(std::pair<std::string, std::shared_ptr < MCClient >> (client->getClientID().getUniqueID(), client));
                         ack.setAck(RequestAckType::Success);
-                        FLEX_LOG_TRACE("MCManager::addClient() -> Client create Success!");
+                        FLEX_LOG_TRACE("MCManager::addClient() -> Client: ", client->getClientID().getID() ," create Success!");
                     } else {
                         ack.setAck(RequestAckType::Fail);
-                        FLEX_LOG_WARN("MCFactory::createClient() -> Client create Fail!");
+                        FLEX_LOG_WARN("MCFactory::createClient() -> Client : ", client->getClientID().getID() ," create Fail!");
                     }
                 } else {
                     ack.setAck(RequestAckType::ClientExist);
-                    FLEX_LOG_WARN("MCManager::addClient() -> Client with ID is already exist");
+                    FLEX_LOG_WARN("MCManager::addClient() -> Client is already exist");
                 }
                 return std::move(ack);
             }

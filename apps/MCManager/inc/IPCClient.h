@@ -36,24 +36,30 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "MCManager.h"
 #include "MCOperationRequest.h"
+#include "MqttMessage.h"
+#include "IPCInterface.h"
 
 namespace rsm {
     namespace msq {
         namespace com {
 
-            class IPCClient { //inheritate from IPC
+            class IPCClient  : flexd::gen::IPCInterface { //inheritate from IPC
             public:
-                IPCClient();
+                IPCClient(flexd::icl::ipc::FleXdEpoll& poller);
                 virtual ~IPCClient();
                 
                 MCRequestAck addClient(const MCNewClientRequest& request);
                 MCRequestAck sendRequest(const MCOperationRequest& request);
                 MCRequestAck publish(const MCMessage& message);
-                void echo(const std::string& msg) const; 
+                
+                virtual void receiveCreateClientMsg(const std::string& ID, const std::string& ExternID, const std::string& Requester, const std::string& IPAddress, const std::string& Topic, uint8_t Direction, bool CleanSession, int Port, int QOS, int KeepAlive);
+                virtual void receiveOperationMsg(const std::string& ID, const std::string& Requester, uint8_t Operation);
+                virtual void receivePublishMsg(const std::string& ID, const std::string& Topic, const std::string& Requester, const std::string& PayloadMsg);
+               
+                virtual void onConnectPeer(uint32_t peerID){}
                 
                 IPCClient(const IPCClient& orig) = delete;
                 IPCClient& operator= (const IPCClient& orig) = delete;
-                
             private:
                 MCManager m_manager;
             };

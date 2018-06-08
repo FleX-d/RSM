@@ -50,7 +50,6 @@ namespace rsm {
                        request.getClientID().getUniqueID()), 
             m_onMessage(request.getOnMessage())
             {
-                FLEX_LOG_INIT("MCClient");
                 FLEX_LOG_TRACE("MCClient -> Create");
             }
 
@@ -64,11 +63,11 @@ namespace rsm {
                 int temp = this->publishMessage(rsm::conn::mqtt::MqttMessage(message.getTopic() , message.getPayload()));
                 if(temp == 0)
                 {
-                    FLEX_LOG_TRACE("MCClient:send() -> Message send Success!");
+                    FLEX_LOG_TRACE("MCClient:send() -> Client: ",m_clientID.getID() ," send message Success!");
                     return true;
                 }
-                FLEX_LOG_WARN("MCClient:send() -> Message send Fail!");
-                return false;
+                FLEX_LOG_WARN("MCClient:send() -> Client: " ,m_clientID.getID() ," send message Fail!");
+                return false; 
             }
 
             bool MCClient::subscribe()
@@ -76,10 +75,10 @@ namespace rsm {
                 int temp = this->subscribeTopic(m_clientID.getTopic());
                 if(temp == 0)
                 {
-                    FLEX_LOG_TRACE("MCClient:subscribe() -> Subscribe Success!");
+                    FLEX_LOG_TRACE("MCClient:subscribe() -> Client: " ,m_clientID.getID() ," subscribe " ,m_clientID.getTopic(), " Success!");
                     return true;
                 }
-                FLEX_LOG_ERROR("MCClient:subscribe() -> Subscribe Fail!");
+                FLEX_LOG_ERROR("MCClient:subscribe() -> Client: " ,m_clientID.getID() ," subscribe " ,m_clientID.getTopic(), " Fail!");
                 return false;
             }
 
@@ -88,10 +87,10 @@ namespace rsm {
                 int temp = this->unsubscribeTopic(m_clientID.getTopic());
                 if(temp == 0)
                 {
-                    FLEX_LOG_TRACE("MCClient:unsubscribe() -> Unsubscribe Success!");
+                    FLEX_LOG_TRACE("MCClient:unsubscribe() -> Client: " ,m_clientID.getID() ," subscribe " ,m_clientID.getTopic(), " Success!");
                     return true;
                 }
-                FLEX_LOG_ERROR("MCClient:unsubscribe() -> Unsubscribe Fail!");
+                FLEX_LOG_ERROR("MCClient:unsubscribe() -> Client: " ,m_clientID.getID() ," subscribe " ,m_clientID.getTopic(), " Fail!");
                 return false;
             }
 

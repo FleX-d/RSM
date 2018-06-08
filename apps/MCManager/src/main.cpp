@@ -37,30 +37,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "IPCClient.h"
 #include <iostream>
 #include <functional>
+#include <FleXdLogger.h>
 
 
 
 int main(int argc, char** argv)
 {
-    rsm::msq::com::IPCClient ipc;
-    rsm::msq::com::MCRequestAck ack;
+    flexd::icl::ipc::FleXdEpoll poller(10);
+    FLEX_LOG_INIT( poller, "MCManager");
+    FLEX_LOG_INFO("MCManager -> Start");
+    rsm::msq::com::IPCClient client(poller);
+    poller.loop();
     
-    rsm::msq::com::MCNewClientRequest request([&ipc](const std::string& m){ipc.echo(m);}, "6H5616FK", "CLIENTFLEXD1", "FlexD", "127.0.0.1", "test", rsm::msq::com::BOTH,  true,  1883,  0,  60);
-    ack = ipc.addClient(request);
-    std::cout << "ID: " << ack.getID() << " status: " << ack.getAck()<< std::endl;
-    
-    rsm::msq::com::MCOperationRequest operation("6H5616FK" , "FlexD", rsm::msq::com::Subscribe);
-    ack = ipc.sendRequest(operation);
-    std::cout << "ID: " << ack.getID() << " status: " << ack.getAck()<< std::endl;
-    
-    
-    rsm::msq::com::MCMessage msg("6H5616FK", "FlexD", "Communication is working!");
-    ack = ipc.publish(msg);
-    std::cout << "ID: " << ack.getID() << " status: " << ack.getAck()<< std::endl;
-    
-    while(1){}
-    //manager.runClient();
-
     return 0;
 }
 

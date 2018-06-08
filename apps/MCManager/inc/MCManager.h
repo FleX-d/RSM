@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <map>
 #include "MCRequestAck.h"
+#include "FleXdEpoll.h"
 #include "MCOperationRequest.h"
 #include "MCMessage.h"
 #include "MCClient.h"

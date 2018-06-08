@@ -34,15 +34,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include "IPCClient.h"
+#include "JsonObj.h"
 
 namespace rsm {
     namespace msq {
         namespace com {
 
-            IPCClient::IPCClient()
-            {
+            IPCClient::IPCClient(flexd::icl::ipc::FleXdEpoll& poller) 
+            : IPCInterface(poller)
+            {   
             }
-
 
             IPCClient::~IPCClient()
             {
@@ -52,22 +53,90 @@ namespace rsm {
             {
                 return m_manager.addClient(request);
             }
-            
+
             MCRequestAck IPCClient::sendRequest(const MCOperationRequest& request)
             {
                 return m_manager.runClient(request);
             }
-            
+
             MCRequestAck IPCClient::publish(const MCMessage& message)
             {
-                return m_manager.clientPublish(message);
+                return m_manager.publish(message);
             }
             
-            void IPCClient::echo(const std::string& msg) const
+            void IPCClient::receiveCreateClientMsg(const std::string& ID, 
+                    const std::string& ExternID, const std::string& Requester, 
+                    const std::string& IPAddress, const std::string& Topic, 
+                    uint8_t Direction, bool CleanSession,
+                    int Port, int QOS, int KeepAlive)
             {
-                std::cout << "IPC: " << msg << std::endl;
+                DirectionType::Enum direction;
+                if(Direction == DirectionType::BOTH)
+                {
+                    direction = DirectionType::BOTH;
+                } else if (Direction == DirectionType::IN)
+                {
+                    direction = DirectionType::IN;
+                } else {
+                    direction = DirectionType::OUT;
+                }
+                rsm::msq::com::MCNewClientRequest request([this](const std::string & m){this->sendBackMsg(m);},ID, ExternID, Requester, IPAddress, Topic, direction, CleanSession, Port, QOS, KeepAlive);
+                MCRequestAck ack = this->addClient(request);
+                if (ack.getAck() == RequestAckType::Success)
+                {
+                    sendRequestAckMsg(ID, 1);
+                } else if (ack.getAck() == RequestAckType::Fail)
+                {
+                    sendRequestAckMsg(ID, 0);            
+                } else if (ack.getAck() == RequestAckType::ClientExist){
+                    sendRequestAckMsg(ID, 2);
+                }
             }
-
+            
+            void IPCClient::receiveOperationMsg(const std::string& ID, const std::string& Requester, uint8_t Operation)
+            {
+                std::cout << "ID: " << ID << " Requester: " << Requester << " Operation: " << Operation << std::endl;
+                if(Operation == OperationRequestType::Subscribe)
+                {
+                    MCOperationRequest request(ID, Requester, OperationRequestType::Subscribe);
+                    MCRequestAck ack = this->sendRequest(request);
+                    if(ack.getAck() == RequestAckType::Success)
+                    {
+                        sendRequestAckMsg(ID, 1);
+                    } else 
+                    {
+                        sendRequestAckMsg(ID, 0);
+                    }
+                } else if (Operation == OperationRequestType::Unsubscribe)
+                {
+                    MCOperationRequest request(ID, Requester, OperationRequestType::Unsubscribe);
+                    MCRequestAck ack = this->sendRequest(request);
+                    if(ack.getAck() == RequestAckType::Success)
+                    {
+                        sendRequestAckMsg(ID, 1);
+                    } else 
+                    {
+                        sendRequestAckMsg(ID, 0);
+                    }
+                }
+            }
+            
+            void IPCClient::receivePublishMsg(const std::string& ID, const std::string& Topic, const std::string& Requester, const std::string& PayloadMsg)
+            {
+                if(!Topic.empty() && !Requester.empty())
+                {
+                    MCMessage m(ID, Topic, Requester, PayloadMsg);
+                    MCRequestAck ack = this->publish(m);
+                    if(ack.getAck() ==  RequestAckType::Success)
+                    {
+                        sendRequestAckMsg(ID, 1);
+                    } else 
+                    {
+                        sendRequestAckMsg(ID, 0);
+                    }
+                }
+            }
+            
         }
     }
 }
