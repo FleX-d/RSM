@@ -58,8 +58,12 @@ namespace rsm {
                
                 virtual void onConnectPeer(uint32_t peerID){}
                 
+                
                 IPCClient(const IPCClient& orig) = delete;
                 IPCClient& operator= (const IPCClient& orig) = delete;
+                
+            private: 
+                void receiveFromBackend(const std::string& str);
             private:
                 MCManager m_manager;
             };

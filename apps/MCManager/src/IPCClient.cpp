@@ -33,8 +33,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <iostream>
+#include <limits>
 #include "IPCClient.h"
 #include "JsonObj.h"
+#include "FleXdIPCMsgTypes.h"
 
 namespace rsm {
     namespace msq {
@@ -80,7 +82,7 @@ namespace rsm {
                 } else {
                     direction = DirectionType::OUT;
                 }
-                rsm::msq::com::MCNewClientRequest request([this](const std::string & m){this->sendBackMsg(m);},ID, ExternID, Requester, IPAddress, Topic, direction, CleanSession, Port, QOS, KeepAlive);
+                rsm::msq::com::MCNewClientRequest request([this](const std::string & m){this->receiveFromBackend(m);},ID, ExternID, Requester, IPAddress, Topic, direction, CleanSession, Port, QOS, KeepAlive);
                 MCRequestAck ack = this->addClient(request);
                 if (ack.getAck() == RequestAckType::Success)
                 {
@@ -95,7 +97,6 @@ namespace rsm {
             
             void IPCClient::receiveOperationMsg(const std::string& ID, const std::string& Requester, uint8_t Operation)
             {
-                std::cout << "ID: " << ID << " Requester: " << Requester << " Operation: " << Operation << std::endl;
                 if(Operation == OperationRequestType::Subscribe)
                 {
                     MCOperationRequest request(ID, Requester, OperationRequestType::Subscribe);
@@ -137,6 +138,28 @@ namespace rsm {
                 }
             }
             
+//**************************TODO - temporary solution ***************************************
+
+            void IPCClient::receiveFromBackend(const std::string& str){
+                const uint32_t size = str.size();
+                const uint16_t max_SIZE = (UINT16_MAX - IPC_MSG_HEADER_SIZE) - 1024; // MAX_MSG_SIZE 65535
+                if (size > max_SIZE) {
+                    uint32_t pos = 0;
+                    const uint8_t count = size / (max_SIZE) + (size % (max_SIZE) ? 1 : 0 );
+                    uint8_t segment = 1;
+                    std::string tmp;
+                    while (pos <= size) {
+                        tmp.assign(str, pos, (segment == count) ? (size - pos) : (max_SIZE));
+                        sendBackMsgSegmented(segment, count, tmp);
+                        pos = segment * (max_SIZE);
+                        segment++;
+                    }
+                }
+                else {
+                    sendBackMsg(str);
+                }
+            }
+//*********************************************************************************************
         }
     }
 }

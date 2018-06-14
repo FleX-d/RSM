@@ -46,7 +46,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     
 namespace flexd {
   namespace gen {
-
+  
 	IPCInterface::IPCInterface (flexd::icl::ipc::FleXdEpoll& poller)
 	:IPCConnector(00000, poller),
 	 m_counter(0)
@@ -75,6 +75,7 @@ namespace flexd {
 	   json.add<int>("/id", id);
 	   json.add<std::string>("/payload/ID", ID);
 	   json.add<uint8_t>("/payload/RequestAck", RequestAck);
+
 	   std::string tmp = json.getJson();
            std::vector<uint8_t> payload(tmp.begin(), tmp.end());
            
@@ -118,64 +119,182 @@ namespace flexd {
            send(msg);
        }
        
+       void IPCInterface::sendBackMsgSegmented(uint8_t Segment, uint8_t Count, const std::string& PayloadMsg)
+       {
+	   uint8_t msgtype = 1;
+           uint8_t msgCounter = m_counter;
+           uint32_t timeStamp = getTimestamp();
+           uint32_t from = getMyID();
+           uint32_t to = 12345;
+           int id = 6;
+           
+	   flexd::icl::JsonObj json = {};
+	   
+	    
+	   json.add<int>("/id", id);
+	   json.add<uint8_t>("/payload/Segment", Segment);
+	   json.add<uint8_t>("/payload/Count", Count);
+	   json.add<std::string>("/payload/PayloadMsg", PayloadMsg);
+
+	   std::string tmp = json.getJson();
+           std::vector<uint8_t> payload(tmp.begin(), tmp.end());
+           
+           auto msg = std::make_shared<flexd::icl::ipc::FleXdIPCMsg>(std::move(payload),true);
+           auto addHeader = msg->getAdditionalHeader();
+	   
+                 addHeader->setValue_0(msgtype);
+                 addHeader->setValue_1(msgCounter);
+                 addHeader->setValue_3(timeStamp);
+                 addHeader->setValue_4(from);
+                 addHeader->setValue_5(to);
+           send(msg);
+       }
+       
         void IPCInterface::receiveMsg(flexd::icl::ipc::pSharedFleXdIPCMsg msg)
         {
-	    std::string str(msg->getPayload().begin(),msg->getPayload().end());
-	    flexd::icl::JsonObj json(str);
-	    int id; 
-	    json.get<int>("/id", id);
-	    switch(id)
-	    {
-	       case 1: {
-	          std::string ID;
-                  std::string ExternID;
-                  std::string Requester;
-                  std::string IPAddress;
-                  std::string Topic;
-                  uint8_t Direction;
-                  bool CleanSession;
-                  int Port;
-                  int QOS;
-                  int KeepAlive;
-                  
-	          json.get<std::string>("/payload/ID", ID);
-	          json.get<std::string>("/payload/ExternID", ExternID);
-	          json.get<std::string>("/payload/Requester", Requester);
-	          json.get<std::string>("/payload/IPAddress", IPAddress);
-	          json.get<std::string>("/payload/Topic", Topic);
-	          json.get<uint8_t>("/payload/Direction", Direction);
-	          json.get<bool>("/payload/CleanSession", CleanSession);
-	          json.get<int>("/payload/Port", Port);
-	          json.get<int>("/payload/QOS", QOS);
-	          json.get<int>("/payload/KeepAlive", KeepAlive);
-                  receiveCreateClientMsg(ID, ExternID, Requester, IPAddress, Topic, Direction, CleanSession, Port, QOS, KeepAlive);
-                  break; }
+            try{
+		std::string str(msg->getPayload().begin(),msg->getPayload().end());
+		flexd::icl::JsonObj json(str);
+		if(json.exist("/id"))
+		{
+		    int id; 
+		    json.get<int>("/id", id);
+		    switch(id)
+		    {
+			case 1: {
+			    std::string ID;
+                            std::string ExternID;
+                            std::string Requester;
+                            std::string IPAddress;
+                            std::string Topic;
+                            uint8_t Direction;
+                            bool CleanSession;
+                            int Port;
+                            int QOS;
+                            int KeepAlive;
+                            
+			    bool tmp = true;
+			    
+			    if(json.exist("/payload/ID")){
+				json.get<std::string>("/payload/ID", ID); 
+			    } else {
+				tmp = false;}
+			    
+			    if(json.exist("/payload/ExternID")){
+				json.get<std::string>("/payload/ExternID", ExternID); 
+			    } else {
+				tmp = false;}
+			    
+			    if(json.exist("/payload/Requester")){
+				json.get<std::string>("/payload/Requester", Requester); 
+			    } else {
+				tmp = false;}
+			    
+			    if(json.exist("/payload/IPAddress")){
+				json.get<std::string>("/payload/IPAddress", IPAddress); 
+			    } else {
+				tmp = false;}
+			    
+			    if(json.exist("/payload/Topic")){
+				json.get<std::string>("/payload/Topic", Topic); 
+			    } else {
+				tmp = false;}
+			    
+			    if(json.exist("/payload/Direction")){
+				json.get<uint8_t>("/payload/Direction", Direction); 
+			    } else {
+				tmp = false;}
+			    
+			    if(json.exist("/payload/CleanSession")){
+				json.get<bool>("/payload/CleanSession", CleanSession); 
+			    } else {
+				tmp = false;}
+			    
+			    if(json.exist("/payload/Port")){
+				json.get<int>("/payload/Port", Port); 
+			    } else {
+				tmp = false;}
+			    
+			    if(json.exist("/payload/QOS")){
+				json.get<int>("/payload/QOS", QOS); 
+			    } else {
+				tmp = false;}
+			    
+			    if(json.exist("/payload/KeepAlive")){
+				json.get<int>("/payload/KeepAlive", KeepAlive); 
+			    } else {
+				tmp = false;}
+			    
+                            
+			    if(tmp){
+			       receiveCreateClientMsg(ID, ExternID, Requester, IPAddress, Topic, Direction, CleanSession, Port, QOS, KeepAlive);}
+			    break; }
 	    
-	       case 2: {
-	          std::string ID;
-                  std::string Requester;
-                  uint8_t Operation;
-                  
-	          json.get<std::string>("/payload/ID", ID);
-	          json.get<std::string>("/payload/Requester", Requester);
-	          json.get<uint8_t>("/payload/Operation", Operation);
-                  receiveOperationMsg(ID, Requester, Operation);
-                  break; }
+			case 2: {
+			    std::string ID;
+                            std::string Requester;
+                            uint8_t Operation;
+                            
+			    bool tmp = true;
+			    
+			    if(json.exist("/payload/ID")){
+				json.get<std::string>("/payload/ID", ID); 
+			    } else {
+				tmp = false;}
+			    
+			    if(json.exist("/payload/Requester")){
+				json.get<std::string>("/payload/Requester", Requester); 
+			    } else {
+				tmp = false;}
+			    
+			    if(json.exist("/payload/Operation")){
+				json.get<uint8_t>("/payload/Operation", Operation); 
+			    } else {
+				tmp = false;}
+			    
+                            
+			    if(tmp){
+			       receiveOperationMsg(ID, Requester, Operation);}
+			    break; }
 	    
-	       case 3: {
-	          std::string ID;
-                  std::string Topic;
-                  std::string Requester;
-                  std::string PayloadMsg;
-                  
-	          json.get<std::string>("/payload/ID", ID);
-	          json.get<std::string>("/payload/Topic", Topic);
-	          json.get<std::string>("/payload/Requester", Requester);
-	          json.get<std::string>("/payload/PayloadMsg", PayloadMsg);
-                  receivePublishMsg(ID, Topic, Requester, PayloadMsg);
-                  break; }
+			case 3: {
+			    std::string ID;
+                            std::string Topic;
+                            std::string Requester;
+                            std::string PayloadMsg;
+                            
+			    bool tmp = true;
+			    
+			    if(json.exist("/payload/ID")){
+				json.get<std::string>("/payload/ID", ID); 
+			    } else {
+				tmp = false;}
+			    
+			    if(json.exist("/payload/Topic")){
+				json.get<std::string>("/payload/Topic", Topic); 
+			    } else {
+				tmp = false;}
+			    
+			    if(json.exist("/payload/Requester")){
+				json.get<std::string>("/payload/Requester", Requester); 
+			    } else {
+				tmp = false;}
+			    
+			    if(json.exist("/payload/PayloadMsg")){
+				json.get<std::string>("/payload/PayloadMsg", PayloadMsg); 
+			    } else {
+				tmp = false;}
+			    
+                            
+			    if(tmp){
+			       receivePublishMsg(ID, Topic, Requester, PayloadMsg);}
+			    break; }
 	    
-	    }
+	           }
+	        }
+	   }catch(...){
+		return;
+	   }
         }
         
        

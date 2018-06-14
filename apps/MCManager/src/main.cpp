@@ -38,17 +38,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <functional>
 #include <FleXdLogger.h>
+#include <FleXdEvent.h>
 
 
 
 int main(int argc, char** argv)
 {
     flexd::icl::ipc::FleXdEpoll poller(10);
-    FLEX_LOG_INIT( poller, "MCManager");
-    FLEX_LOG_INFO("MCManager -> Start");
-    rsm::msq::com::IPCClient client(poller);
-    poller.loop();
-    
+    flexd::icl::ipc::FleXdTermEvent e(poller);
+    if(e.init()){
+        FLEX_LOG_INIT( poller, "MCManager");
+        FLEX_LOG_INFO("MCManager -> Start");
+        rsm::msq::com::IPCClient client(poller);
+        poller.loop(); 
+    }
     return 0;
 }
 

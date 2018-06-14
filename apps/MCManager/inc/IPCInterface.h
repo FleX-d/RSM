@@ -51,6 +51,7 @@ namespace flexd {
             virtual ~IPCInterface();
 	    void sendRequestAckMsg(const std::string& ID, uint8_t RequestAck);
             void sendBackMsg(const std::string& PayloadMsg);
+            void sendBackMsgSegmented(uint8_t Segment, uint8_t Count, const std::string& PayloadMsg);
         
 	
 	private:
