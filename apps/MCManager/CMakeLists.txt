@@ -91,5 +91,6 @@ target_link_libraries(${PROJECT_NAME}
 
 include_directories(inc/ ${mosquittoClientPublicInc} ${JSON_PARSER_INCLUDE_DIRS} ${FLEXD_IPC_CONNECTOR_INCLUDE_DIRS} ${FLEXD_IPC_EPOLL_INCLUDE_DIRS} ${FLEXD_IPC_COMMON_INCLUDE_DIRS} ${FLEXD_LOGGER_INCLUDE_DIRS})
 target_compile_options(${PROJECT_NAME} PUBLIC -std=c++14 -Wall -Wfloat-conversion  ${JSON_PARSER_CFLAGS_OTHER})
+install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 
 add_dependencies(${PROJECT_NAME} mosquittoClient)
