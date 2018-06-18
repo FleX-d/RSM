@@ -56,7 +56,7 @@ namespace rsm {
                 virtual void receiveOperationMsg(const std::string& ID, const std::string& Requester, uint8_t Operation);
                 virtual void receivePublishMsg(const std::string& ID, const std::string& Topic, const std::string& Requester, const std::string& PayloadMsg);
                
-                virtual void onConnectPeer(uint32_t peerID){}
+                virtual void onConnectPeer(uint32_t peerID, bool genericPeer){}
                 
                 
                 IPCClient(const IPCClient& orig) = delete;
