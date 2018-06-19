@@ -1,11 +1,11 @@
 
 # Mosquitto Client
 
- Facade for communication base on Mosquitto library https://github.com/eclipse/mosquitto 
+ Facade for communication based on the Mosquitto library https://github.com/eclipse/mosquitto 
 
 ## Example Usecase
 
- Communication base on subscribing and publishing messages on topic
+ Communication based on subscribing and publishing messages on topic
 
 ## Usage
 
@@ -24,4 +24,4 @@
 
     client->publishMessage(rsm::conn::mqtt::MqttMessage(topic , " Communication is working! "));  
 
-Better Example you can find at folder tests
+Examples can be found in the tests folder.
