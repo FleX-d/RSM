@@ -1,7 +1,7 @@
 # MCManager
 
-Mosquitto Comunication Manager is aplication witch is using Mosquitto Client facade for manage multiple clients 
-and also using IPC layer to communicate with other aplications
+Mosquitto Comunication Manager is an aplication witch is using Mosquitto Client facade for manage multiple clients 
+and also is using IPC layer to communicate with other aplications.
 
 ## Example Usecase
 
