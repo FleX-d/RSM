@@ -1,0 +1,24 @@
+# Changelog
+All notable changes to this project will be documented in this file.
+
+## [Unreleased]
+
+## [0.0.1] - 2018-01-02
+### Added
+- Initial version [Adrian Peniak]
+
+### Changed
+- None
+
+### Removed
+- None
+
+## [0.0.2] - 2018-01-18
+### Added
+- Example of Mosquitto comunication [Matus Bodorik]
+
+### Changed
+- None
+
+### Removed
+- None

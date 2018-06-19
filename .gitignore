@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# Coustom
+.kdev4
+*.kdev4
+nbproject/
+build/
