@@ -24,48 +24,49 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /* 
- * File:   iMosquittoClient.h
- * 
+ * File:   MCMessage.h
  * Author: Matus Bodorik
- * 
- * Created on November 10, 2017, 10:07 AM
+ *
+ * Created on January 19, 2018, 9:38 AM
  */
 
-#ifndef IMOSQUITTOCLIENT_H
-#define IMOSQUITTOCLIENT_H
+#ifndef MCMESSAGE_H
+#define MCMESSAGE_H
 
-#include "MosquittoConnection.h"
-#include "MqttTypes.h"
-#include "MqttMessage.h"
-#include <atomic>
+#include <string>
 
 namespace rsm {
-    namespace conn {
-        namespace mqtt {
-            
-            class MosquittoSetting;
-            class iMosquittoClient : public MosquittoConnection {
+    namespace msq {
+        namespace com {
+
+            class MCMessage {
             public:
-                iMosquittoClient(const mqttStr_t& id, const MosquittoSetting& settings);
-                virtual ~iMosquittoClient();
-
-                int publishMessage(const MqttMessage& message);
-                int subscribeTopic(const mqttStr_t& topic, int qos = 0);
-                int unsubscribeTopic(const mqttStr_t& topic);
-                int switchTopic(const mqttStr_t& leaveTopic, const mqttStr_t& subTopic, int qos = 0);
-                const mqttStr_t& getVersion() const;
+                MCMessage();
+                MCMessage(const std::string& id, const std::string& topic, const std::string& requester, const std::string& payload);
+                virtual ~MCMessage();
                 
-            protected:
-                virtual void onRecon() = 0;
-                virtual void onMessage(const MqttMessage& msg) = 0;
+                void setPayload(const std::string& payload);
+                void setID(const std::string& id);
+                void setRequester(const std::string& requester);
+                void setTopic(const std::string& topic);
+                const std::string& getTopic() const;
+                const std::string& getPayload() const;
+                const std::string& getID() const;
+                const std::string& getRequester() const;
+                
+                MCMessage& operator=(const MCMessage& orig) = delete;
+                MCMessage(const MCMessage& orig) = delete;
+                
             private:
-                std::atomic<bool> m_connected; 
-                const mqttStr_t& m_version = "1.0.1";
+                std::string m_ID;
+                std::string m_topic;
+                std::string m_requester;
+                std::string m_payload;
+                
             };
-        } // namespace mqtt
-    } // namespace conn
-} // namespace rsm
+        }
+    }
+}
+#endif /* MCMESSAGE_H */
 
-#endif /* IMOSQUITTOCLIENT_H */

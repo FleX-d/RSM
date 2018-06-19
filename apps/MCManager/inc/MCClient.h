@@ -24,48 +24,53 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /* 
- * File:   iMosquittoClient.h
- * 
+ * File:   MCClient.h
  * Author: Matus Bodorik
- * 
- * Created on November 10, 2017, 10:07 AM
+ *
+ * Created on January 19, 2018, 9:30 AM
  */
 
-#ifndef IMOSQUITTOCLIENT_H
-#define IMOSQUITTOCLIENT_H
+#ifndef MCCLIENT_H
+#define MCCLIENT_H
 
-#include "MosquittoConnection.h"
-#include "MqttTypes.h"
+#include "MCNewClientRequest.h"
+#include "MCClientID.h"
+#include "iMosquittoClient.h"
 #include "MqttMessage.h"
-#include <atomic>
+#include "MCMessage.h"
+#include "MCRequestAck.h"
 
 namespace rsm {
-    namespace conn {
-        namespace mqtt {
-            
-            class MosquittoSetting;
-            class iMosquittoClient : public MosquittoConnection {
-            public:
-                iMosquittoClient(const mqttStr_t& id, const MosquittoSetting& settings);
-                virtual ~iMosquittoClient();
+    namespace msq {
+        namespace com {
 
-                int publishMessage(const MqttMessage& message);
-                int subscribeTopic(const mqttStr_t& topic, int qos = 0);
-                int unsubscribeTopic(const mqttStr_t& topic);
-                int switchTopic(const mqttStr_t& leaveTopic, const mqttStr_t& subTopic, int qos = 0);
-                const mqttStr_t& getVersion() const;
+            class MCClient : public rsm::conn::mqtt::iMosquittoClient {
+            public:
+                explicit MCClient(const MCNewClientRequest& request);
+                virtual ~MCClient();
+                
+                bool send(const MCMessage& message);
+                bool subscribe();
+                bool unsubscribe();
+                
+                const MCClientID& getClientID() const;
+                
+                MCClient(const MCClient& orig) = delete;
+                MCClient& operator= (const MCClient& orig) = delete;
                 
             protected:
-                virtual void onRecon() = 0;
-                virtual void onMessage(const MqttMessage& msg) = 0;
-            private:
-                std::atomic<bool> m_connected; 
-                const mqttStr_t& m_version = "1.0.1";
-            };
-        } // namespace mqtt
-    } // namespace conn
-} // namespace rsm
+                virtual void onMessage(const rsm::conn::mqtt::MqttMessage& msg) override;
+                virtual void onRecon() override;
 
-#endif /* IMOSQUITTOCLIENT_H */
+
+            private:
+                MCClientID m_clientID;
+                std::function<void(const std::string&)> m_onMessage;
+
+            };
+        }
+    }
+}
+#endif /* MCCLIENT_H */
+

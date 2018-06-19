@@ -24,48 +24,46 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /* 
- * File:   iMosquittoClient.h
- * 
+ * File:   MCManager.h
  * Author: Matus Bodorik
- * 
- * Created on November 10, 2017, 10:07 AM
+ *
+ * Created on January 19, 2018, 9:25 AM
  */
 
-#ifndef IMOSQUITTOCLIENT_H
-#define IMOSQUITTOCLIENT_H
+#ifndef MCMANAGER_H
+#define MCMANAGER_H
 
-#include "MosquittoConnection.h"
-#include "MqttTypes.h"
-#include "MqttMessage.h"
-#include <atomic>
+#include <map>
+#include "MCRequestAck.h"
+#include "FleXdEpoll.h"
+#include "MCOperationRequest.h"
+#include "MCMessage.h"
+#include "MCClient.h"
+#include <memory>
+
 
 namespace rsm {
-    namespace conn {
-        namespace mqtt {
-            
-            class MosquittoSetting;
-            class iMosquittoClient : public MosquittoConnection {
+    namespace msq {
+        namespace com {
+
+            class MCManager {
             public:
-                iMosquittoClient(const mqttStr_t& id, const MosquittoSetting& settings);
-                virtual ~iMosquittoClient();
-
-                int publishMessage(const MqttMessage& message);
-                int subscribeTopic(const mqttStr_t& topic, int qos = 0);
-                int unsubscribeTopic(const mqttStr_t& topic);
-                int switchTopic(const mqttStr_t& leaveTopic, const mqttStr_t& subTopic, int qos = 0);
-                const mqttStr_t& getVersion() const;
+                MCManager();
+                virtual ~MCManager();
                 
-            protected:
-                virtual void onRecon() = 0;
-                virtual void onMessage(const MqttMessage& msg) = 0;
+                MCRequestAck addClient(const MCNewClientRequest& request);
+                MCRequestAck runClient(const MCOperationRequest& request);
+                MCRequestAck publish(const MCMessage& message);
+                
+                MCManager(const MCManager& orig) = delete;
+                MCManager& operator= (const MCManager& orig) = delete;
+                
             private:
-                std::atomic<bool> m_connected; 
-                const mqttStr_t& m_version = "1.0.1";
+                std::map <std::string , std::shared_ptr<MCClient>> m_clientMap; // TODO replace std::string key with MCClientID
             };
-        } // namespace mqtt
-    } // namespace conn
-} // namespace rsm
+        }
+    }
+}
+#endif /* MCMANAGER_H */
 
-#endif /* IMOSQUITTOCLIENT_H */

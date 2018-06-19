@@ -24,72 +24,72 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /* 
- * File:   MosquittoSetting.cpp
- * 
+ * File:   MCClientConf.cpp
  * Author: Matus Bodorik
  * 
- * Created on November 20, 2017, 10:25 AM
+ * Created on January 19, 2018, 9:36 AM
  */
 
-#include "MosquittoSetting.h"
+#include "MCClientID.h"
 
 namespace rsm {
-    namespace conn {
-        namespace mqtt {
-
-            MosquittoSetting::MosquittoSetting(const mqttStr_t& ipAddress, int port, int qos, int keepAlive, bool cleanSesion) 
-            : m_ipAddress(ipAddress),
-              m_port(port),
-              m_qos(qos),
-              m_keepAlive(keepAlive),
-              m_cleanSession(cleanSesion)
+    namespace msq {
+        namespace com {
+            
+            MCClientID::~MCClientID()
             {
             }
 
-            void MosquittoSetting::setIpAddress(const mqttStr_t& ipAddress) {
-                this->m_ipAddress = ipAddress;
-            }
-
-            void MosquittoSetting::setPort(int port) {
-                this->m_port = port;
-            }
-
-            void MosquittoSetting::setQOS(int qos) {
-                this->m_qos = qos;
-            }
-
-            void MosquittoSetting::setCleanSession(bool cleanSession)
+            MCClientID::MCClientID(const std::string& id, const std::string& externalID, 
+                                   const std::string& requester, const std::string& topic) 
+            : m_ID(id),
+            m_externalID(externalID),
+            m_requester(requester),
+            m_topic(topic),
+            m_uniqueID(m_ID + m_requester)
             {
-                this->m_cleanSession = cleanSession;
             }
 
-            void MosquittoSetting::setKeepAlive(int keepAlive) {
-                this->m_keepAlive = keepAlive;
-            }
-
-            const mqttStr_t& MosquittoSetting::getIpAddress() const {
-                return m_ipAddress;
-            }
-
-            int MosquittoSetting::getPort() const {
-                return m_port;
-            }
-
-            int MosquittoSetting::getQOS() const {
-                return m_qos;
-            }
-
-            bool MosquittoSetting::getCleanSession() const
+            MCClientID::MCClientID(const std::string& id, const std::string& externalID, 
+                                   const std::string& requester, const std::string& topic, 
+                                   const std::string& uniqueID) 
+            : m_ID(id),
+            m_externalID(externalID),
+            m_requester(requester),
+            m_topic(topic),
+            m_uniqueID(uniqueID)
             {
-                return m_cleanSession;
+            }
+            
+            MCClientID::MCClientID()
+            {    
             }
 
-            int MosquittoSetting::getKeepAlive()const {
-                return m_keepAlive;
+            const std::string& MCClientID::getID() const
+            {
+                return m_ID;
             }
 
-        } // namespace mqtt
-    } // namespace conn
-} // namespace rsm
+            const std::string& MCClientID::getExternalID() const
+            {
+                return m_externalID;
+            }
+
+            const std::string& MCClientID::getRequester() const
+            {
+                return m_requester;
+            }
+
+            const std::string& MCClientID::getTopic() const
+            {
+                return m_topic;
+            }
+
+            const std::string& MCClientID::getUniqueID() const
+            {
+                return m_uniqueID;
+            }
+        }
+    }
+}

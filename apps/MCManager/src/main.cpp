@@ -24,48 +24,34 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-/* 
- * File:   iMosquittoClient.h
- * 
+/*
+ * File:   main.cpp
  * Author: Matus Bodorik
- * 
- * Created on November 10, 2017, 10:07 AM
+ *
+ * Created on January 19, 2018, 09:19 PM
  */
 
-#ifndef IMOSQUITTOCLIENT_H
-#define IMOSQUITTOCLIENT_H
+#include "MCManager.h"
+#include "MCNewClientRequest.h"
+#include "MCTypes.h"
+#include "IPCClient.h"
+#include <iostream>
+#include <functional>
+#include <FleXdLogger.h>
+#include <FleXdEvent.h>
 
-#include "MosquittoConnection.h"
-#include "MqttTypes.h"
-#include "MqttMessage.h"
-#include <atomic>
 
-namespace rsm {
-    namespace conn {
-        namespace mqtt {
-            
-            class MosquittoSetting;
-            class iMosquittoClient : public MosquittoConnection {
-            public:
-                iMosquittoClient(const mqttStr_t& id, const MosquittoSetting& settings);
-                virtual ~iMosquittoClient();
 
-                int publishMessage(const MqttMessage& message);
-                int subscribeTopic(const mqttStr_t& topic, int qos = 0);
-                int unsubscribeTopic(const mqttStr_t& topic);
-                int switchTopic(const mqttStr_t& leaveTopic, const mqttStr_t& subTopic, int qos = 0);
-                const mqttStr_t& getVersion() const;
-                
-            protected:
-                virtual void onRecon() = 0;
-                virtual void onMessage(const MqttMessage& msg) = 0;
-            private:
-                std::atomic<bool> m_connected; 
-                const mqttStr_t& m_version = "1.0.1";
-            };
-        } // namespace mqtt
-    } // namespace conn
-} // namespace rsm
+int main(int argc, char** argv)
+{
+    flexd::icl::ipc::FleXdEpoll poller(10);
+    flexd::icl::ipc::FleXdTermEvent e(poller);
+    if(e.init()){
+        FLEX_LOG_INIT( poller, "MCManager");
+        FLEX_LOG_INFO("MCManager -> Start");
+        rsm::msq::com::IPCClient client(poller);
+        poller.loop(); 
+    }
+    return 0;
+}
 
-#endif /* IMOSQUITTOCLIENT_H */

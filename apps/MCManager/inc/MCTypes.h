@@ -24,48 +24,48 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /* 
- * File:   iMosquittoClient.h
- * 
+ * File:   MCTypes.h
  * Author: Matus Bodorik
- * 
- * Created on November 10, 2017, 10:07 AM
+ *
+ * Created on January 22, 2018, 1:15 PM
  */
 
-#ifndef IMOSQUITTOCLIENT_H
-#define IMOSQUITTOCLIENT_H
 
-#include "MosquittoConnection.h"
-#include "MqttTypes.h"
-#include "MqttMessage.h"
-#include <atomic>
+
+#ifndef MCTYPES_H
+#define MCTYPES_H
 
 namespace rsm {
-    namespace conn {
-        namespace mqtt {
-            
-            class MosquittoSetting;
-            class iMosquittoClient : public MosquittoConnection {
-            public:
-                iMosquittoClient(const mqttStr_t& id, const MosquittoSetting& settings);
-                virtual ~iMosquittoClient();
+    namespace msq {
+        namespace com {
 
-                int publishMessage(const MqttMessage& message);
-                int subscribeTopic(const mqttStr_t& topic, int qos = 0);
-                int unsubscribeTopic(const mqttStr_t& topic);
-                int switchTopic(const mqttStr_t& leaveTopic, const mqttStr_t& subTopic, int qos = 0);
-                const mqttStr_t& getVersion() const;
-                
-            protected:
-                virtual void onRecon() = 0;
-                virtual void onMessage(const MqttMessage& msg) = 0;
-            private:
-                std::atomic<bool> m_connected; 
-                const mqttStr_t& m_version = "1.0.1";
-            };
-        } // namespace mqtt
-    } // namespace conn
-} // namespace rsm
+            namespace OperationRequestType {
+                enum Enum {
+                    Subscribe = 0x00,
+                    Unsubscribe =0x01
+                };
+            }
 
-#endif /* IMOSQUITTOCLIENT_H */
+            namespace RequestAckType {
+                enum Enum {
+                    Success = 0x01,
+                    Fail = 0x00,
+                    ClientExist = 0x02,
+                    ClientNotExist = 0x03,
+                    UndefinedError = 0xFF
+                };
+            }
+
+            namespace DirectionType {
+                enum Enum {
+                    IN = 0x00,
+                    OUT = 0x01,
+                    BOTH = 0x02
+                };
+            }
+        }
+    }
+}
+#endif /* MCTYPES_H */
+

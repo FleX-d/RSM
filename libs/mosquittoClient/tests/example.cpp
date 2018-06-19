@@ -54,10 +54,14 @@ class Client : public rsm::conn::mqtt::iMosquittoClient
         {
         }
         
+        
         virtual void onMessage(const rsm::conn::mqtt::MqttMessage& msg) override 
         {
             std::cout << "Client get message ... " << msg.getMessage() << "\n";
         }
+        
+        void onRecon() override;
+
 };
 
 int main(int argc, char** argv) {

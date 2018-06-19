@@ -24,48 +24,64 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /* 
- * File:   iMosquittoClient.h
- * 
+ * File:   MCOperationRequest.cpp
  * Author: Matus Bodorik
  * 
- * Created on November 10, 2017, 10:07 AM
+ * Created on January 25, 2018, 12:16 PM
  */
 
-#ifndef IMOSQUITTOCLIENT_H
-#define IMOSQUITTOCLIENT_H
-
-#include "MosquittoConnection.h"
-#include "MqttTypes.h"
-#include "MqttMessage.h"
-#include <atomic>
+#include "MCOperationRequest.h"
 
 namespace rsm {
-    namespace conn {
-        namespace mqtt {
+    namespace msq {
+        namespace com {
+
+            MCOperationRequest::MCOperationRequest()
+            {
+            }
+
+            MCOperationRequest::MCOperationRequest(const std::string& id, const std::string& requester, const OperationRequestType::Enum type) :
+            m_ID(id),
+            m_requester(requester),
+            m_operationRequestType(type)
+            {
+            }
+
+            MCOperationRequest::~MCOperationRequest()
+            {
+            }
+
+            const std::string& MCOperationRequest::getID() const
+            {
+                return m_ID;
+            }
+
+            const OperationRequestType::Enum MCOperationRequest::getOperationRequestType() const
+            {
+                return m_operationRequestType;
+            }
+
+            const std::string& MCOperationRequest::getRequester() const
+            {
+                return m_requester;
+            }
             
-            class MosquittoSetting;
-            class iMosquittoClient : public MosquittoConnection {
-            public:
-                iMosquittoClient(const mqttStr_t& id, const MosquittoSetting& settings);
-                virtual ~iMosquittoClient();
+            void MCOperationRequest::setID(const std::string& id)
+            {
+                this->m_ID = id;
+            }
 
-                int publishMessage(const MqttMessage& message);
-                int subscribeTopic(const mqttStr_t& topic, int qos = 0);
-                int unsubscribeTopic(const mqttStr_t& topic);
-                int switchTopic(const mqttStr_t& leaveTopic, const mqttStr_t& subTopic, int qos = 0);
-                const mqttStr_t& getVersion() const;
-                
-            protected:
-                virtual void onRecon() = 0;
-                virtual void onMessage(const MqttMessage& msg) = 0;
-            private:
-                std::atomic<bool> m_connected; 
-                const mqttStr_t& m_version = "1.0.1";
-            };
-        } // namespace mqtt
-    } // namespace conn
-} // namespace rsm
+            void MCOperationRequest::setOperationRequestType(const OperationRequestType::Enum type)
+            {
+                this->m_operationRequestType = type;
+            }
 
-#endif /* IMOSQUITTOCLIENT_H */
+            void MCOperationRequest::setRequester(const std::string& requester)
+            {
+                this->m_requester = requester;
+            }
+
+        }
+    }
+}

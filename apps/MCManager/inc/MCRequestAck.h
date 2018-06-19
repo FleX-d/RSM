@@ -24,48 +24,42 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /* 
- * File:   iMosquittoClient.h
- * 
+ * File:   MCRequestAck.h
  * Author: Matus Bodorik
- * 
- * Created on November 10, 2017, 10:07 AM
+ *
+ * Created on January 25, 2018, 12:13 PM
  */
 
-#ifndef IMOSQUITTOCLIENT_H
-#define IMOSQUITTOCLIENT_H
+#ifndef MCREQUESTACK_H
+#define MCREQUESTACK_H
 
-#include "MosquittoConnection.h"
-#include "MqttTypes.h"
-#include "MqttMessage.h"
-#include <atomic>
+#include "MCTypes.h"
+#include <string>
 
 namespace rsm {
-    namespace conn {
-        namespace mqtt {
-            
-            class MosquittoSetting;
-            class iMosquittoClient : public MosquittoConnection {
+    namespace msq {
+        namespace com {
+
+            class MCRequestAck {
             public:
-                iMosquittoClient(const mqttStr_t& id, const MosquittoSetting& settings);
-                virtual ~iMosquittoClient();
-
-                int publishMessage(const MqttMessage& message);
-                int subscribeTopic(const mqttStr_t& topic, int qos = 0);
-                int unsubscribeTopic(const mqttStr_t& topic);
-                int switchTopic(const mqttStr_t& leaveTopic, const mqttStr_t& subTopic, int qos = 0);
-                const mqttStr_t& getVersion() const;
                 
-            protected:
-                virtual void onRecon() = 0;
-                virtual void onMessage(const MqttMessage& msg) = 0;
+                MCRequestAck();
+                MCRequestAck(const std::string& id, const RequestAckType::Enum type);
+                virtual ~MCRequestAck();
+                
+                void setAck(const RequestAckType::Enum ack);
+                void setID(const std::string& id);
+                const std::string& getID()const;
+                const RequestAckType::Enum getAck() const;
+                
+                MCRequestAck(const MCRequestAck& orig); 
             private:
-                std::atomic<bool> m_connected; 
-                const mqttStr_t& m_version = "1.0.1";
+                std::string m_ID;
+                RequestAckType::Enum m_ack;
             };
-        } // namespace mqtt
-    } // namespace conn
-} // namespace rsm
+        }
+    }
+}
+#endif /* MCREQUESTACK_H */
 
-#endif /* IMOSQUITTOCLIENT_H */

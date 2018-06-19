@@ -24,72 +24,74 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /* 
- * File:   MosquittoSetting.cpp
- * 
+ * File:   MCMessage.cpp
  * Author: Matus Bodorik
  * 
- * Created on November 20, 2017, 10:25 AM
+ * Created on January 19, 2018, 9:38 AM
  */
 
-#include "MosquittoSetting.h"
+#include "MCMessage.h"
 
 namespace rsm {
-    namespace conn {
-        namespace mqtt {
+    namespace msq {
+        namespace com {
 
-            MosquittoSetting::MosquittoSetting(const mqttStr_t& ipAddress, int port, int qos, int keepAlive, bool cleanSesion) 
-            : m_ipAddress(ipAddress),
-              m_port(port),
-              m_qos(qos),
-              m_keepAlive(keepAlive),
-              m_cleanSession(cleanSesion)
+            MCMessage::MCMessage()
             {
             }
 
-            void MosquittoSetting::setIpAddress(const mqttStr_t& ipAddress) {
-                this->m_ipAddress = ipAddress;
-            }
-
-            void MosquittoSetting::setPort(int port) {
-                this->m_port = port;
-            }
-
-            void MosquittoSetting::setQOS(int qos) {
-                this->m_qos = qos;
-            }
-
-            void MosquittoSetting::setCleanSession(bool cleanSession)
+            MCMessage::MCMessage(const std::string& id, const std::string& topic, const std::string& requester, const std::string& payload) :
+            m_ID(id),
+            m_topic(topic),
+            m_requester(requester),
+            m_payload(payload)
             {
-                this->m_cleanSession = cleanSession;
             }
 
-            void MosquittoSetting::setKeepAlive(int keepAlive) {
-                this->m_keepAlive = keepAlive;
-            }
-
-            const mqttStr_t& MosquittoSetting::getIpAddress() const {
-                return m_ipAddress;
-            }
-
-            int MosquittoSetting::getPort() const {
-                return m_port;
-            }
-
-            int MosquittoSetting::getQOS() const {
-                return m_qos;
-            }
-
-            bool MosquittoSetting::getCleanSession() const
+            MCMessage::~MCMessage()
             {
-                return m_cleanSession;
             }
 
-            int MosquittoSetting::getKeepAlive()const {
-                return m_keepAlive;
+            const std::string& MCMessage::getID() const
+            {
+                return m_ID;
             }
 
-        } // namespace mqtt
-    } // namespace conn
-} // namespace rsm
+            const std::string& MCMessage::getPayload() const
+            {
+                return m_payload;
+            }
+
+            const std::string& MCMessage::getRequester() const
+            {
+                return m_requester;
+            }
+            
+            const std::string& MCMessage::getTopic() const
+            {
+                return m_topic;
+            }
+            
+            void MCMessage::setTopic(const std::string& topic)
+            {
+                this->m_topic = topic;
+            }
+
+            void MCMessage::setID(const std::string& id)
+            {
+                this->m_ID = id;
+            }
+
+            void MCMessage::setPayload(const std::string& payload)
+            {
+                this->m_payload = payload;
+            }
+
+            void MCMessage::setRequester(const std::string& requester)
+            {
+                this->m_requester = requester;
+            }
+        }
+    }
+}

@@ -24,48 +24,53 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /* 
- * File:   iMosquittoClient.h
- * 
+ * File:   MCClientConf.h
  * Author: Matus Bodorik
- * 
- * Created on November 10, 2017, 10:07 AM
+ *
+ * Created on January 19, 2018, 9:36 AM
  */
 
-#ifndef IMOSQUITTOCLIENT_H
-#define IMOSQUITTOCLIENT_H
+#ifndef MCCLIENTCONF_H
+#define MCCLIENTCONF_H
 
-#include "MosquittoConnection.h"
-#include "MqttTypes.h"
-#include "MqttMessage.h"
-#include <atomic>
+#include "MCTypes.h"
+#include <string>
 
 namespace rsm {
-    namespace conn {
-        namespace mqtt {
-            
-            class MosquittoSetting;
-            class iMosquittoClient : public MosquittoConnection {
+    namespace msq {
+        namespace com {
+
+            class MCClientID {
             public:
-                iMosquittoClient(const mqttStr_t& id, const MosquittoSetting& settings);
-                virtual ~iMosquittoClient();
-
-                int publishMessage(const MqttMessage& message);
-                int subscribeTopic(const mqttStr_t& topic, int qos = 0);
-                int unsubscribeTopic(const mqttStr_t& topic);
-                int switchTopic(const mqttStr_t& leaveTopic, const mqttStr_t& subTopic, int qos = 0);
-                const mqttStr_t& getVersion() const;
+                MCClientID();
+                MCClientID(const std::string& id, const std::string& externalID,
+                           const std::string& requester, const std::string& topic);
                 
-            protected:
-                virtual void onRecon() = 0;
-                virtual void onMessage(const MqttMessage& msg) = 0;
-            private:
-                std::atomic<bool> m_connected; 
-                const mqttStr_t& m_version = "1.0.1";
-            };
-        } // namespace mqtt
-    } // namespace conn
-} // namespace rsm
+                MCClientID(const std::string& id, const std::string& externalID, 
+                           const std::string& requester, const std::string& topic, 
+                           const std::string& uniqueID);
+                ~MCClientID();
 
-#endif /* IMOSQUITTOCLIENT_H */
+                const std::string& getID() const;
+                const std::string& getExternalID() const;
+                const std::string& getRequester() const;
+                const std::string& getTopic() const;
+                const std::string& getUniqueID() const;
+                
+                MCClientID(const MCClientID& orig) = delete;
+                MCClientID& operator=(const MCClientID& orig) = delete;
+
+            private:
+                const std::string m_ID;
+                const std::string m_externalID;
+                const std::string m_requester;
+                const std::string m_topic;
+                const std::string m_uniqueID;
+
+            };
+        }
+    }
+}
+#endif /* MCCLIENTCONF_H */
+
