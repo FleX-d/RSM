@@ -24,7 +24,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* 
+/*
  * File:   MCMessage.h
  * Author: Matus Bodorik
  *
@@ -42,28 +42,27 @@ namespace rsm {
 
             class MCMessage {
             public:
-                MCMessage();
-                MCMessage(const std::string& id, const std::string& topic, const std::string& requester, const std::string& payload);
+                MCMessage(uint32_t ID, const std::string& topic, const std::string& requester, const std::string& payload);
                 virtual ~MCMessage();
-                
+
                 void setPayload(const std::string& payload);
-                void setID(const std::string& id);
+                void setID(uint32_t ID);
                 void setRequester(const std::string& requester);
                 void setTopic(const std::string& topic);
                 const std::string& getTopic() const;
                 const std::string& getPayload() const;
-                const std::string& getID() const;
+                uint32_t getID() const;
                 const std::string& getRequester() const;
-                
+
                 MCMessage& operator=(const MCMessage& orig) = delete;
                 MCMessage(const MCMessage& orig) = delete;
-                
+
             private:
-                std::string m_ID;
+                uint32_t m_ID;
                 std::string m_topic;
                 std::string m_requester;
                 std::string m_payload;
-                
+
             };
         }
     }

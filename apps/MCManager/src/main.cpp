@@ -50,7 +50,9 @@ int main(int argc, char** argv)
         FLEX_LOG_INIT( poller, "MCManager");
         FLEX_LOG_INFO("MCManager -> Start");
         rsm::msq::com::IPCClient client(poller);
-        poller.loop(); 
+        if(client.initGenericServer()){
+            poller.loop();
+        }
     }
     return 0;
 }

@@ -24,7 +24,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* 
+/*
  * File:   MCClientConf.h
  * Author: Matus Bodorik
  *
@@ -44,30 +44,29 @@ namespace rsm {
             class MCClientID {
             public:
                 MCClientID();
-                MCClientID(const std::string& id, const std::string& externalID,
+                MCClientID(uint32_t id, const std::string& externalID,
                            const std::string& requester, const std::string& topic);
-                
-                MCClientID(const std::string& id, const std::string& externalID, 
-                           const std::string& requester, const std::string& topic, 
+
+                MCClientID(uint32_t id, const std::string& externalID,
+                           const std::string& requester, const std::string& topic,
                            const std::string& uniqueID);
                 ~MCClientID();
 
-                const std::string& getID() const;
+                uint32_t getID() const;
                 const std::string& getExternalID() const;
                 const std::string& getRequester() const;
                 const std::string& getTopic() const;
                 const std::string& getUniqueID() const;
-                
+
                 MCClientID(const MCClientID& orig) = delete;
                 MCClientID& operator=(const MCClientID& orig) = delete;
 
             private:
-                const std::string m_ID;
+                uint32_t m_ID;
                 const std::string m_externalID;
                 const std::string m_requester;
                 const std::string m_topic;
                 const std::string m_uniqueID;
-
             };
         }
     }

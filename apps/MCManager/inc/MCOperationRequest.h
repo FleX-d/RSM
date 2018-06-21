@@ -24,7 +24,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* 
+/*
  * File:   MCOperationRequest.h
  * Author: Matus Bodorik
  *
@@ -44,37 +44,37 @@ namespace rsm {
             class MCOperationRequest {
             public:
                 /**
-                 * Empty constructor 
+                 * Empty constructor
                  */
                 MCOperationRequest();
                 /**
                  * Constructor for create operation request
-                 * @param id - id of CLient 
+                 * @param ID - ID of CLient
                  * @param requester - internal name of application which request for mqtt communication
                  * @param type - type of operation request |Subscribe|Unsubscribe|
                  */
-                MCOperationRequest(const std::string& id, const std::string& requester, const OperationRequestType::Enum type);
+                MCOperationRequest(uint32_t ID, const std::string& requester, const OperationRequestType::Enum type);
                 virtual ~MCOperationRequest();
-                
+
                 /**
                  * Geters and seters for operation request
                  */
                 const OperationRequestType::Enum getOperationRequestType() const;
-                const std::string& getID() const;
+                uint32_t getID() const;
                 const std::string& getRequester() const;
-                void setOperationRequestType(const OperationRequestType::Enum type); 
-                void setID(const std::string& id);
+                void setOperationRequestType(const OperationRequestType::Enum type);
+                void setID(uint32_t ID);
                 void setRequester(const std::string& requester);
-                
+
                 MCOperationRequest(const MCOperationRequest& orig) = delete;
                 MCOperationRequest& operator= (const MCOperationRequest& orig) = delete;
             private:
-                
-                std::string m_ID;
+
+                uint32_t m_ID;
                 std::string m_requester;
                 OperationRequestType::Enum m_operationRequestType;
-                
-                
+
+
             };
         }
     }

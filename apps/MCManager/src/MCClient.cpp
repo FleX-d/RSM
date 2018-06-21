@@ -24,10 +24,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* 
+/*
  * File:   MCClient.cpp
  * Author: Matus Bodorik
- * 
+ *
  * Created on January 19, 2018, 9:30 AM
  */
 
@@ -43,11 +43,11 @@ namespace rsm {
 
             MCClient::MCClient(const MCNewClientRequest& request)
             : rsm::conn::mqtt::iMosquittoClient(request.getClientID().getExternalID(), request.getSettings()),
-            m_clientID(request.getClientID().getID(), 
-                       request.getClientID().getExternalID(), 
-                       request.getClientID().getRequester(), 
-                       request.getClientID().getTopic(), 
-                       request.getClientID().getUniqueID()), 
+            m_clientID(request.getClientID().getID(),
+                       request.getClientID().getExternalID(),
+                       request.getClientID().getRequester(),
+                       request.getClientID().getTopic(),
+                       request.getClientID().getUniqueID()),
             m_onMessage(request.getOnMessage())
             {
                 FLEX_LOG_TRACE("MCClient -> Create");
@@ -67,7 +67,7 @@ namespace rsm {
                     return true;
                 }
                 FLEX_LOG_WARN("MCClient:send() -> Client: " ,m_clientID.getID() ," send message Fail!");
-                return false; 
+                return false;
             }
 
             bool MCClient::subscribe()
@@ -96,9 +96,9 @@ namespace rsm {
 
             void MCClient::onMessage(const rsm::conn::mqtt::MqttMessage& msg)
             {
-                m_onMessage(msg.getMessage());
+                m_onMessage(this->m_clientID.getID(), msg.getMessage());
             }
-            
+
             void MCClient::onRecon()
             {
                 this->subscribeTopic(m_clientID.getTopic());

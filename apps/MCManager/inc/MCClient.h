@@ -24,7 +24,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* 
+/*
  * File:   MCClient.h
  * Author: Matus Bodorik
  *
@@ -49,24 +49,23 @@ namespace rsm {
             public:
                 explicit MCClient(const MCNewClientRequest& request);
                 virtual ~MCClient();
-                
+
                 bool send(const MCMessage& message);
                 bool subscribe();
                 bool unsubscribe();
-                
+
                 const MCClientID& getClientID() const;
-                
+
                 MCClient(const MCClient& orig) = delete;
                 MCClient& operator= (const MCClient& orig) = delete;
-                
+
             protected:
                 virtual void onMessage(const rsm::conn::mqtt::MqttMessage& msg) override;
                 virtual void onRecon() override;
 
-
             private:
                 MCClientID m_clientID;
-                std::function<void(const std::string&)> m_onMessage;
+                std::function<void(uint32_t, const std::string&)> m_onMessage;
 
             };
         }

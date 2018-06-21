@@ -24,7 +24,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* 
+/*
  * File:   MCRequest.h
  * Author: Matus Bodorik
  *
@@ -44,33 +44,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace rsm {
     namespace msq {
         namespace com {
-         
+
             class MCNewClientRequest { //TODO ID -uint16_t
             public:
                 /**
                  * Constructor for create request
-                 * @param id -Hash code ID for Client 
+                 * @param id -Hash code ID for Client
                  * @param externID - external name for CLient
                  * @param requester - internal name of application which request for mqtt communication
                  * @param ipAddress - ip address for communication
                  * @param topic - name of topic where client want to be connect
                  * @param direction - direction of communication |IN|OUT|BOTH|
                  * @param cleanSession  -|TRUE|FALSE|, true = default
-                 * @param port - port for communication, 1883 = default   
-                 * @param qos - Quality of service, 0 = default 
-                 * @param keepAlive - Keep Alive, 60 = default 
+                 * @param port - port for communication, 1883 = default
+                 * @param qos - Quality of service, 0 = default
+                 * @param keepAlive - Keep Alive, 60 = default
                  */
-                MCNewClientRequest(std::function<void(const std::string&)> onMessage, const std::string& id,
+                MCNewClientRequest(std::function<void(uint32_t, const std::string&)> onMessage, uint32_t ID,
                           const std::string& externID, const std::string& requester, const std::string& ipAddress,
                           const std::string& topic, const DirectionType::Enum direction, bool cleanSession = true,
                           int port = 1883, int qos = 0, int keepAlive = 60);
                 virtual ~MCNewClientRequest();
                 /**
                  * Function to set parameters to Mosquitto settings
-                 * @param ipAddress -Ip address for communication 
-                 * @param port -  port for communication, 1883 = default   
-                 * @param qos - Quality of service, 0 = default 
-                 * @param keepAlive - Keep Alive, 60 = default 
+                 * @param ipAddress -Ip address for communication
+                 * @param port -  port for communication, 1883 = default
+                 * @param qos - Quality of service, 0 = default
+                 * @param keepAlive - Keep Alive, 60 = default
                  * @param cleanSession - |TRUE|FALSE|, true = default
                  * @return true if set parameters
                  */
@@ -87,26 +87,26 @@ namespace rsm {
                  */
                 const rsm::conn::mqtt::MosquittoSetting& getSettings() const;
                 /**
-                 * Function return type of direction    
+                 * Function return type of direction
                  * @return type of direction |IN|OUT|BOTH|
                  */
                 const DirectionType::Enum getDirection() const;
                 /**
-                 * Function return client identifiers 
-                 * @return reference to MCClientID which contains topic, id, requester and externalID 
+                 * Function return client identifiers
+                 * @return reference to MCClientID which contains topic, id, requester and externalID
                  */
                 const MCClientID& getClientID() const;
                 /**
                  * Function return lambda function onMessage
                  * @return return lambda function onMessage
                  */
-                std::function<void(const std::string&)> getOnMessage() const ;
- 
+                std::function<void(uint32_t, const std::string&)> getOnMessage() const ;
+
                 MCNewClientRequest(const MCNewClientRequest& orig) = delete;
                 MCNewClientRequest& operator= (const MCNewClientRequest& orig) = delete;
-                
+
             private:
-                std::function<void(const std::string&)> m_onMessage;
+                std::function<void(uint32_t, const std::string&)> m_onMessage;
                 MCClientID m_clientID;
                 DirectionType::Enum m_direction;
                 rsm::conn::mqtt::MosquittoSetting m_settings;
