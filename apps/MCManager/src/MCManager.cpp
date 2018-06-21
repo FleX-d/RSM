@@ -24,10 +24,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* 
+/*
  * File:   MCManager.cpp
  * Author: Matus Bodorik
- * 
+ *
  * Created on January 19, 2018, 9:25 AM
  */
 
@@ -68,14 +68,14 @@ namespace rsm {
                     }
                 } else {
                     ack.setAck(RequestAckType::ClientExist);
-                    FLEX_LOG_WARN("MCManager::addClient() -> Client is already exist");
+                    FLEX_LOG_WARN("MCManager::addClient() -> Client already exist");
                 }
                 return std::move(ack);
             }
 
             MCRequestAck MCManager::runClient(const MCOperationRequest& request)
             {
-                std::string uniqueID = request.getID() + request.getRequester();
+                std::string uniqueID = std::to_string(request.getID()) + request.getRequester();
                 auto it = m_clientMap.find(uniqueID);
                 MCRequestAck ack;
                 if (it != m_clientMap.end())
@@ -113,9 +113,9 @@ namespace rsm {
             MCRequestAck MCManager::publish(const MCMessage& message)
             {
                 MCRequestAck ack;
-                std::string uniqueID = message.getID() + message.getRequester();
+                std::string uniqueID = std::to_string(message.getID()) + message.getRequester();
                 auto it = m_clientMap.find(uniqueID);
-                
+
                 if (it != m_clientMap.end())
                 {
                     ack.setID(it->second->getClientID().getID());
@@ -127,14 +127,14 @@ namespace rsm {
                         ack.setAck(RequestAckType::Fail);
                         FLEX_LOG_ERROR("MCManager::clientPublish() -> Client Publish Fail!");
                     }
-                } else 
+                } else
                 {
                     ack.setAck(RequestAckType::ClientNotExist);
                     FLEX_LOG_WARN("MCManager::clientPublish() -> Client with ID is not exist");
                 }
                 return std::move(ack);
             }
-            
+
         }
     }
 }

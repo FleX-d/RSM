@@ -25,10 +25,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* 
+/*
  * File:   MCRequest.cpp
  * Author: Matus Bodorik
- * 
+ *
  * Created on January 19, 2018, 9:23 AM
  */
 
@@ -38,12 +38,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace rsm {
     namespace msq {
         namespace com {
-            
-            MCNewClientRequest::MCNewClientRequest(std::function<void(const std::string&)> onMessage, const std::string& id,
+
+            MCNewClientRequest::MCNewClientRequest(std::function<void(uint32_t, const std::string&)> onMessage, uint32_t ID,
                                  const std::string& externID, const std::string& requester, const std::string& ipAddress,
                                  const std::string& topic, const DirectionType::Enum direction, bool cleanSession, int port, int qos, int keepAlive)
             : m_onMessage(onMessage),
-              m_clientID(id, externID, requester, topic),
+              m_clientID(ID, externID, requester, topic),
               m_direction(direction),
               m_settings(ipAddress, port, qos, keepAlive, cleanSession)
             {
@@ -53,7 +53,7 @@ namespace rsm {
             {
             }
 
-            bool MCNewClientRequest::setSettings(const std::string& ipAddress,const int port, 
+            bool MCNewClientRequest::setSettings(const std::string& ipAddress,const int port,
                                         const int qos, const int keepAlive, const bool cleanSession)
             {
                 this->m_settings.setIpAddress(ipAddress);
@@ -79,13 +79,13 @@ namespace rsm {
             {
                 return m_direction;
             }
-            
+
             const MCClientID& MCNewClientRequest::getClientID() const
             {
                 return m_clientID;
             }
 
-            std::function<void(const std::string&)> MCNewClientRequest::getOnMessage() const
+            std::function<void(uint32_t, const std::string&)> MCNewClientRequest::getOnMessage() const
             {
                 return m_onMessage;
             }

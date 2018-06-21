@@ -24,10 +24,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* 
+/*
  * File:   MCClientConf.cpp
  * Author: Matus Bodorik
- * 
+ *
  * Created on January 19, 2018, 9:36 AM
  */
 
@@ -36,24 +36,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace rsm {
     namespace msq {
         namespace com {
-            
+
             MCClientID::~MCClientID()
             {
             }
 
-            MCClientID::MCClientID(const std::string& id, const std::string& externalID, 
-                                   const std::string& requester, const std::string& topic) 
+            MCClientID::MCClientID(uint32_t id, const std::string& externalID,
+                                   const std::string& requester, const std::string& topic)
             : m_ID(id),
-            m_externalID(externalID),
-            m_requester(requester),
-            m_topic(topic),
-            m_uniqueID(m_ID + m_requester)
+                m_externalID(externalID),
+                m_requester(requester),
+                m_topic(topic),
+            m_uniqueID(std::to_string(id) + m_requester)
             {
             }
 
-            MCClientID::MCClientID(const std::string& id, const std::string& externalID, 
-                                   const std::string& requester, const std::string& topic, 
-                                   const std::string& uniqueID) 
+            MCClientID::MCClientID(uint32_t id, const std::string& externalID,
+                                   const std::string& requester, const std::string& topic,
+                                   const std::string& uniqueID)
             : m_ID(id),
             m_externalID(externalID),
             m_requester(requester),
@@ -61,12 +61,12 @@ namespace rsm {
             m_uniqueID(uniqueID)
             {
             }
-            
+
             MCClientID::MCClientID()
-            {    
+            {
             }
 
-            const std::string& MCClientID::getID() const
+            uint32_t MCClientID::getID() const
             {
                 return m_ID;
             }

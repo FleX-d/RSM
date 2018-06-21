@@ -24,7 +24,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* 
+/*
  * File:   MCRequestAck.h
  * Author: Matus Bodorik
  *
@@ -43,19 +43,19 @@ namespace rsm {
 
             class MCRequestAck {
             public:
-                
                 MCRequestAck();
-                MCRequestAck(const std::string& id, const RequestAckType::Enum type);
+                MCRequestAck(uint32_t id, const RequestAckType::Enum type);
                 virtual ~MCRequestAck();
-                
+
                 void setAck(const RequestAckType::Enum ack);
-                void setID(const std::string& id);
-                const std::string& getID()const;
+                void setID(uint32_t id);
+                uint32_t getID() const;
                 const RequestAckType::Enum getAck() const;
-                
-                MCRequestAck(const MCRequestAck& orig); 
+
+                MCRequestAck(const MCRequestAck& orig);
+
             private:
-                std::string m_ID;
+                uint32_t m_ID;
                 RequestAckType::Enum m_ack;
             };
         }

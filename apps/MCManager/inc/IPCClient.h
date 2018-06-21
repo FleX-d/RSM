@@ -24,7 +24,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* 
+/*
  * File:   IPCClient.h
  * Author: Matus Bodorik
  *
@@ -43,27 +43,21 @@ namespace rsm {
     namespace msq {
         namespace com {
 
-            class IPCClient  : flexd::gen::IPCInterface { //inheritate from IPC
+            class IPCClient : public flexd::gen::IPCInterface { //inheritate from IPC
             public:
                 IPCClient(flexd::icl::ipc::FleXdEpoll& poller);
                 virtual ~IPCClient();
-                
+
                 MCRequestAck addClient(const MCNewClientRequest& request);
                 MCRequestAck sendRequest(const MCOperationRequest& request);
                 MCRequestAck publish(const MCMessage& message);
-                
-                virtual void receiveCreateClientMsg(const std::string& ID, const std::string& ExternID, const std::string& Requester, const std::string& IPAddress, const std::string& Topic, uint8_t Direction, bool CleanSession, int Port, int QOS, int KeepAlive);
-                virtual void receiveOperationMsg(const std::string& ID, const std::string& Requester, uint8_t Operation);
-                virtual void receivePublishMsg(const std::string& ID, const std::string& Topic, const std::string& Requester, const std::string& PayloadMsg);
-               
-                virtual void onConnectPeer(uint32_t peerID, bool genericPeer){}
-                
-                
+
+                virtual void receiveCreateClientMsg(uint32_t ID, const std::string& ExternID, const std::string& Requester, const std::string& IPAddress, const std::string& Topic, uint8_t Direction, bool CleanSession, int Port, int QOS, int KeepAlive) override;
+                virtual void receiveOperationMsg(uint32_t ID, const std::string& Requester, uint8_t Operation) override;
+                virtual void receivePublishMsg(uint32_t ID, const std::string& Topic, const std::string& Requester, const std::string& PayloadMsg) override;
+                virtual void onConnectPeer(uint32_t ID, bool genericPeer) override {}
                 IPCClient(const IPCClient& orig) = delete;
                 IPCClient& operator= (const IPCClient& orig) = delete;
-                
-            private: 
-                void receiveFromBackend(const std::string& str);
             private:
                 MCManager m_manager;
             };

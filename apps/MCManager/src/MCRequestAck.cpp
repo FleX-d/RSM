@@ -24,10 +24,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* 
+/*
  * File:   MCRequestAck.cpp
  * Author: Matus Bodorik
- * 
+ *
  * Created on January 25, 2018, 12:13 PM
  */
 
@@ -37,21 +37,21 @@ namespace rsm {
         namespace com {
 
             MCRequestAck::MCRequestAck()
-            : m_ID(""),
-            m_ack(RequestAckType::Success)
+            : m_ID(-1),
+              m_ack(RequestAckType::Success)
             {
             }
-            
-            MCRequestAck::MCRequestAck(const std::string& id, const RequestAckType::Enum type) 
-            : m_ID(id),
-            m_ack(type)
+
+            MCRequestAck::MCRequestAck(uint32_t ID, const RequestAckType::Enum type)
+            : m_ID(ID),
+              m_ack(type)
             {
             }
-            
+
             MCRequestAck::~MCRequestAck()
             {
             }
-            
+
             MCRequestAck::MCRequestAck(const MCRequestAck& orig)
             {
                 m_ID = orig.m_ID;
@@ -63,7 +63,7 @@ namespace rsm {
                 return m_ack;
             }
 
-            const std::string& MCRequestAck::getID() const
+            uint32_t MCRequestAck::getID() const
             {
                 return m_ID;
             }
@@ -73,9 +73,9 @@ namespace rsm {
                 this->m_ack = ack;
             }
 
-            void MCRequestAck::setID(const std::string& id)
+            void MCRequestAck::setID(uint32_t ID)
             {
-                this->m_ID = id;
+                this->m_ID = ID;
             }
 
         }

@@ -25,10 +25,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* 
+/*
  * File:   IPCClient.cpp
  * Author: Matus Bodorik
- * 
+ *
  * Created on January 25, 2018, 9:41 AM
  */
 
@@ -42,9 +42,9 @@ namespace rsm {
     namespace msq {
         namespace com {
 
-            IPCClient::IPCClient(flexd::icl::ipc::FleXdEpoll& poller) 
+            IPCClient::IPCClient(flexd::icl::ipc::FleXdEpoll& poller)
             : IPCInterface(poller)
-            {   
+            {
             }
 
             IPCClient::~IPCClient()
@@ -65,10 +65,10 @@ namespace rsm {
             {
                 return m_manager.publish(message);
             }
-            
-            void IPCClient::receiveCreateClientMsg(const std::string& ID, 
-                    const std::string& ExternID, const std::string& Requester, 
-                    const std::string& IPAddress, const std::string& Topic, 
+
+            void IPCClient::receiveCreateClientMsg(uint32_t ID,
+                    const std::string& ExternID, const std::string& Requester,
+                    const std::string& IPAddress, const std::string& Topic,
                     uint8_t Direction, bool CleanSession,
                     int Port, int QOS, int KeepAlive)
             {
@@ -82,20 +82,20 @@ namespace rsm {
                 } else {
                     direction = DirectionType::OUT;
                 }
-                rsm::msq::com::MCNewClientRequest request([this](const std::string & m){this->receiveFromBackend(m);},ID, ExternID, Requester, IPAddress, Topic, direction, CleanSession, Port, QOS, KeepAlive);
+                rsm::msq::com::MCNewClientRequest request([this](uint32_t id, const std::string& m){this->sendBackMsg(id, m);}, ID, ExternID, Requester, IPAddress, Topic, direction, CleanSession, Port, QOS, KeepAlive);
                 MCRequestAck ack = this->addClient(request);
                 if (ack.getAck() == RequestAckType::Success)
                 {
                     sendRequestAckMsg(ID, 1);
                 } else if (ack.getAck() == RequestAckType::Fail)
                 {
-                    sendRequestAckMsg(ID, 0);            
+                    sendRequestAckMsg(ID, 0);
                 } else if (ack.getAck() == RequestAckType::ClientExist){
                     sendRequestAckMsg(ID, 2);
                 }
             }
-            
-            void IPCClient::receiveOperationMsg(const std::string& ID, const std::string& Requester, uint8_t Operation)
+
+            void IPCClient::receiveOperationMsg(uint32_t ID, const std::string& Requester, uint8_t Operation)
             {
                 if(Operation == OperationRequestType::Subscribe)
                 {
@@ -104,7 +104,7 @@ namespace rsm {
                     if(ack.getAck() == RequestAckType::Success)
                     {
                         sendRequestAckMsg(ID, 1);
-                    } else 
+                    } else
                     {
                         sendRequestAckMsg(ID, 0);
                     }
@@ -115,14 +115,14 @@ namespace rsm {
                     if(ack.getAck() == RequestAckType::Success)
                     {
                         sendRequestAckMsg(ID, 1);
-                    } else 
+                    } else
                     {
                         sendRequestAckMsg(ID, 0);
                     }
                 }
             }
-            
-            void IPCClient::receivePublishMsg(const std::string& ID, const std::string& Topic, const std::string& Requester, const std::string& PayloadMsg)
+
+            void IPCClient::receivePublishMsg(uint32_t ID, const std::string& Topic, const std::string& Requester, const std::string& PayloadMsg)
             {
                 if(!Topic.empty() && !Requester.empty())
                 {
@@ -131,35 +131,12 @@ namespace rsm {
                     if(ack.getAck() ==  RequestAckType::Success)
                     {
                         sendRequestAckMsg(ID, 1);
-                    } else 
+                    } else
                     {
                         sendRequestAckMsg(ID, 0);
                     }
                 }
             }
-            
-//**************************TODO - temporary solution ***************************************
-
-            void IPCClient::receiveFromBackend(const std::string& str){
-                const uint32_t size = str.size();
-                const uint16_t max_SIZE = (UINT16_MAX - IPC_MSG_HEADER_SIZE) - 1024; // MAX_MSG_SIZE 65535
-                if (size > max_SIZE) {
-                    uint32_t pos = 0;
-                    const uint8_t count = size / (max_SIZE) + (size % (max_SIZE) ? 1 : 0 );
-                    uint8_t segment = 1;
-                    std::string tmp;
-                    while (pos <= size) {
-                        tmp.assign(str, pos, (segment == count) ? (size - pos) : (max_SIZE));
-                        sendBackMsgSegmented(segment, count, tmp);
-                        pos = segment * (max_SIZE);
-                        segment++;
-                    }
-                }
-                else {
-                    sendBackMsg(str);
-                }
-            }
-//*********************************************************************************************
         }
     }
 }
