@@ -56,17 +56,17 @@ namespace rsm {
             bool MCNewClientRequest::setSettings(const std::string& ipAddress,const int port,
                                         const int qos, const int keepAlive, const bool cleanSession)
             {
-                this->m_settings.setIpAddress(ipAddress);
-                this->m_settings.setPort(port);
-                this->m_settings.setQOS(qos);
-                this->m_settings.setKeepAlive(keepAlive);
-                this->m_settings.setCleanSession(cleanSession);
+                m_settings.setIpAddress(ipAddress);
+                m_settings.setPort(port);
+                m_settings.setQOS(qos);
+                m_settings.setKeepAlive(keepAlive);
+                m_settings.setCleanSession(cleanSession);
                 return true;
             }
 
             bool MCNewClientRequest::setDirection(const DirectionType::Enum type)
             {
-                this->m_direction = type;
+                m_direction = type;
                 return true;
             }
 

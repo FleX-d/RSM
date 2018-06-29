@@ -70,7 +70,7 @@ namespace rsm {
                     ack.setAck(RequestAckType::ClientExist);
                     FLEX_LOG_WARN("MCManager::addClient() -> Client already exist");
                 }
-                return std::move(ack);
+                return ack;
             }
 
             MCRequestAck MCManager::runClient(const MCOperationRequest& request)
@@ -106,7 +106,7 @@ namespace rsm {
                     ack.setAck(RequestAckType::ClientNotExist);
                     FLEX_LOG_WARN("MCManager::runClient() -> Client with ID is not exist");
                 }
-                return std::move(ack);
+                return ack;
             }
 
 
@@ -132,7 +132,7 @@ namespace rsm {
                     ack.setAck(RequestAckType::ClientNotExist);
                     FLEX_LOG_WARN("MCManager::clientPublish() -> Client with ID is not exist");
                 }
-                return std::move(ack);
+                return ack;
             }
 
         }

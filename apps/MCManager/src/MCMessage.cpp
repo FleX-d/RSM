@@ -37,21 +37,16 @@ namespace rsm {
     namespace msq {
         namespace com {
 
-            MCMessage::MCMessage(uint32_t ID, const std::string& topic, const std::string& requester, const std::string& payload) :
-            m_ID(ID),
-            m_topic(topic),
-            m_requester(requester),
-            m_payload(payload)
+            MCMessage::MCMessage(uint32_t id, const std::string& topic, const std::string& requester, const std::string& payload)
+            : MCPeer(id),
+              m_topic(topic),
+              m_requester(requester),
+              m_payload(payload)
             {
             }
 
             MCMessage::~MCMessage()
             {
-            }
-
-            uint32_t MCMessage::getID() const
-            {
-                return m_ID;
             }
 
             const std::string& MCMessage::getPayload() const
@@ -71,22 +66,17 @@ namespace rsm {
 
             void MCMessage::setTopic(const std::string& topic)
             {
-                this->m_topic = topic;
-            }
-
-            void MCMessage::setID(uint32_t ID)
-            {
-                this->m_ID = ID;
+                m_topic = topic;
             }
 
             void MCMessage::setPayload(const std::string& payload)
             {
-                this->m_payload = payload;
+                m_payload = payload;
             }
 
             void MCMessage::setRequester(const std::string& requester)
             {
-                this->m_requester = requester;
+                m_requester = requester;
             }
         }
     }

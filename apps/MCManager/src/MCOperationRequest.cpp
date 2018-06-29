@@ -37,8 +37,8 @@ namespace rsm {
     namespace msq {
         namespace com {
 
-            MCOperationRequest::MCOperationRequest(uint32_t ID, const std::string& requester, const OperationRequestType::Enum type)
-            : m_ID(ID),
+            MCOperationRequest::MCOperationRequest(uint32_t id, const std::string& requester, const OperationRequestType::Enum type)
+            : MCPeer(id),
               m_requester(requester),
               m_operationRequestType(type)
             {
@@ -46,11 +46,6 @@ namespace rsm {
 
             MCOperationRequest::~MCOperationRequest()
             {
-            }
-
-            uint32_t MCOperationRequest::getID() const
-            {
-                return m_ID;
             }
 
             const OperationRequestType::Enum MCOperationRequest::getOperationRequestType() const
@@ -63,19 +58,14 @@ namespace rsm {
                 return m_requester;
             }
 
-            void MCOperationRequest::setID(uint32_t ID)
-            {
-                this->m_ID = ID;
-            }
-
             void MCOperationRequest::setOperationRequestType(const OperationRequestType::Enum type)
             {
-                this->m_operationRequestType = type;
+                m_operationRequestType = type;
             }
 
             void MCOperationRequest::setRequester(const std::string& requester)
             {
-                this->m_requester = requester;
+                m_requester = requester;
             }
 
         }

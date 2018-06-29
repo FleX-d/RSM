@@ -37,13 +37,13 @@ namespace rsm {
         namespace com {
 
             MCRequestAck::MCRequestAck()
-            : m_ID(-1),
+            : MCPeer(-1),
               m_ack(RequestAckType::Success)
             {
             }
 
             MCRequestAck::MCRequestAck(uint32_t ID, const RequestAckType::Enum type)
-            : m_ID(ID),
+            : MCPeer(ID),
               m_ack(type)
             {
             }
@@ -53,9 +53,9 @@ namespace rsm {
             }
 
             MCRequestAck::MCRequestAck(const MCRequestAck& orig)
+            : MCPeer(orig.m_ID),
+              m_ack(orig.m_ack)
             {
-                m_ID = orig.m_ID;
-                m_ack = orig.m_ack;
             }
 
             const RequestAckType::Enum MCRequestAck::getAck() const
@@ -63,19 +63,9 @@ namespace rsm {
                 return m_ack;
             }
 
-            uint32_t MCRequestAck::getID() const
-            {
-                return m_ID;
-            }
-
             void MCRequestAck::setAck(const RequestAckType::Enum ack)
             {
-                this->m_ack = ack;
-            }
-
-            void MCRequestAck::setID(uint32_t ID)
-            {
-                this->m_ID = ID;
+                m_ack = ack;
             }
 
         }

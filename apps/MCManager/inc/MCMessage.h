@@ -34,36 +34,34 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef MCMESSAGE_H
 #define MCMESSAGE_H
 
+#include "MCTypes.h"
 #include <string>
 
 namespace rsm {
     namespace msq {
         namespace com {
 
-            class MCMessage {
+            class MCMessage : public MCPeer {
             public:
-                MCMessage(uint32_t ID, const std::string& topic, const std::string& requester, const std::string& payload);
+                MCMessage(uint32_t id, const std::string& topic, const std::string& requester, const std::string& payload);
                 virtual ~MCMessage();
 
                 void setPayload(const std::string& payload);
-                void setID(uint32_t ID);
                 void setRequester(const std::string& requester);
                 void setTopic(const std::string& topic);
                 const std::string& getTopic() const;
                 const std::string& getPayload() const;
-                uint32_t getID() const;
                 const std::string& getRequester() const;
 
                 MCMessage& operator=(const MCMessage& orig) = delete;
                 MCMessage(const MCMessage& orig) = delete;
 
             private:
-                uint32_t m_ID;
                 std::string m_topic;
                 std::string m_requester;
                 std::string m_payload;
-
             };
+
         }
     }
 }

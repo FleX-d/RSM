@@ -41,36 +41,33 @@ namespace rsm {
     namespace msq {
         namespace com {
 
-            class MCOperationRequest {
+            class MCOperationRequest : public MCPeer {
             public:
-                /**
-                 * Empty constructor
-                 */
-                MCOperationRequest();
+//                 /**
+//                  * Empty constructor
+//                  */
+//                 MCOperationRequest();
                 /**
                  * Constructor for create operation request
-                 * @param ID - ID of CLient
+                 * @param id - ID of CLient
                  * @param requester - internal name of application which request for mqtt communication
                  * @param type - type of operation request |Subscribe|Unsubscribe|
                  */
-                MCOperationRequest(uint32_t ID, const std::string& requester, const OperationRequestType::Enum type);
+                MCOperationRequest(uint32_t id, const std::string& requester, const OperationRequestType::Enum type);
                 virtual ~MCOperationRequest();
 
                 /**
                  * Geters and seters for operation request
                  */
                 const OperationRequestType::Enum getOperationRequestType() const;
-                uint32_t getID() const;
                 const std::string& getRequester() const;
                 void setOperationRequestType(const OperationRequestType::Enum type);
-                void setID(uint32_t ID);
                 void setRequester(const std::string& requester);
 
                 MCOperationRequest(const MCOperationRequest& orig) = delete;
                 MCOperationRequest& operator= (const MCOperationRequest& orig) = delete;
-            private:
 
-                uint32_t m_ID;
+            private:
                 std::string m_requester;
                 OperationRequestType::Enum m_operationRequestType;
 

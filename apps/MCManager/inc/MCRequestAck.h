@@ -41,21 +41,18 @@ namespace rsm {
     namespace msq {
         namespace com {
 
-            class MCRequestAck {
+            class MCRequestAck : public MCPeer {
             public:
                 MCRequestAck();
                 MCRequestAck(uint32_t id, const RequestAckType::Enum type);
                 virtual ~MCRequestAck();
 
                 void setAck(const RequestAckType::Enum ack);
-                void setID(uint32_t id);
-                uint32_t getID() const;
                 const RequestAckType::Enum getAck() const;
 
                 MCRequestAck(const MCRequestAck& orig);
 
             private:
-                uint32_t m_ID;
                 RequestAckType::Enum m_ack;
             };
         }

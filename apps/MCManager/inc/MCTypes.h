@@ -24,7 +24,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* 
+/*
  * File:   MCTypes.h
  * Author: Matus Bodorik
  *
@@ -35,6 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef MCTYPES_H
 #define MCTYPES_H
+
+#include <stdint.h>
 
 namespace rsm {
     namespace msq {
@@ -64,6 +66,19 @@ namespace rsm {
                     BOTH = 0x02
                 };
             }
+
+            class MCPeer {
+            public:
+                explicit MCPeer(uint32_t id) : m_ID(id) {}
+                virtual ~MCPeer() = default;
+
+                void setID(uint32_t id)  { m_ID = id; }
+                uint32_t getID() const { return m_ID; }
+
+            protected:
+                uint32_t m_ID;
+            };
+
         }
     }
 }
