@@ -19,6 +19,7 @@ SET(privateHeaders
     inc/MCOperationRequest.h
     inc/MCRequestAck.h
     inc/IPCInterface.h
+    inc/GenericClient.h
 )
 SET(privateSources
     src/main.cpp
@@ -31,6 +32,7 @@ SET(privateSources
     src/MCOperationRequest.cpp
     src/MCRequestAck.cpp
     src/IPCInterface.cpp
+    src/GenericClient.cpp
 )
 
 

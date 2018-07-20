@@ -52,9 +52,14 @@ namespace rsm {
                 MCRequestAck sendRequest(const MCOperationRequest& request);
                 MCRequestAck publish(const MCMessage& message);
 
+                virtual void receiveCreateClientMsg(std::shared_ptr<GenericClient::Header> header, uint32_t ID, const std::string& ExternID, const std::string& Requester, const std::string& IPAddress, const std::string& Topic, uint8_t Direction, bool CleanSession, int Port, int QOS, int KeepAlive) override;
+                virtual void receiveOperationMsg(std::shared_ptr<GenericClient::Header> header, uint32_t ID, const std::string& Requester, uint8_t Operation) override;
+                virtual void receivePublishMsg(std::shared_ptr<GenericClient::Header> header, uint32_t ID, const std::string& Topic, const std::string& Requester, const std::string& PayloadMsg) override;
+                
                 virtual void receiveCreateClientMsg(uint32_t ID, const std::string& ExternID, const std::string& Requester, const std::string& IPAddress, const std::string& Topic, uint8_t Direction, bool CleanSession, int Port, int QOS, int KeepAlive) override;
                 virtual void receiveOperationMsg(uint32_t ID, const std::string& Requester, uint8_t Operation) override;
                 virtual void receivePublishMsg(uint32_t ID, const std::string& Topic, const std::string& Requester, const std::string& PayloadMsg) override;
+            
                 virtual void onConnectPeer(uint32_t ID, bool genericPeer) override {}
                 IPCClient(const IPCClient& orig) = delete;
                 IPCClient& operator= (const IPCClient& orig) = delete;

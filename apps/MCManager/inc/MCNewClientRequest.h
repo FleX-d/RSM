@@ -39,6 +39,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "MCClientID.h"
 #include "MCTypes.h"
 #include "MosquittoSetting.h"
+#include "GenericClient.h"
+#include <memory>
 
 
 namespace rsm {
@@ -61,6 +63,11 @@ namespace rsm {
                  * @param keepAlive - Keep Alive, 60 = default
                  */
                 MCNewClientRequest(std::function<void(uint32_t, const std::string&)> onMessage, uint32_t ID,
+                          const std::string& externID, const std::string& requester, const std::string& ipAddress,
+                          const std::string& topic, const DirectionType::Enum direction, bool cleanSession = true,
+                          int port = 1883, int qos = 0, int keepAlive = 60);
+                
+                MCNewClientRequest(std::function<void(std::shared_ptr<flexd::gen::GenericClient::Header> , uint32_t, const std::string&)> onMessage, uint32_t ID,
                           const std::string& externID, const std::string& requester, const std::string& ipAddress,
                           const std::string& topic, const DirectionType::Enum direction, bool cleanSession = true,
                           int port = 1883, int qos = 0, int keepAlive = 60);
@@ -101,12 +108,15 @@ namespace rsm {
                  * @return return lambda function onMessage
                  */
                 std::function<void(uint32_t, const std::string&)> getOnMessage() const ;
+                
+                std::function<void(std::shared_ptr<flexd::gen::GenericClient::Header>, uint32_t, const std::string&)> getOnGenMessage() const ;
 
                 MCNewClientRequest(const MCNewClientRequest& orig) = delete;
                 MCNewClientRequest& operator= (const MCNewClientRequest& orig) = delete;
 
             private:
                 std::function<void(uint32_t, const std::string&)> m_onMessage;
+                std::function<void(std::shared_ptr<flexd::gen::GenericClient::Header>, uint32_t, const std::string&)> m_onGenMessage;
                 MCClientID m_clientID;
                 DirectionType::Enum m_direction;
                 rsm::conn::mqtt::MosquittoSetting m_settings;

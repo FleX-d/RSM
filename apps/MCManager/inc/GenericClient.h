@@ -1,3 +1,4 @@
+
 /*
 Copyright (c) 2017, Globallogic s.r.o.
 All rights reserved.
@@ -24,54 +25,54 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /*
- * File:   MCClient.h
+ * File:   IPCClient.h
  * Author: Matus Bodorik
  *
- * Created on January 19, 2018, 9:30 AM
+ * Created on Jul 04, 2018, 11:00 AM
  */
 
-#ifndef MCCLIENT_H
-#define MCCLIENT_H
+#ifndef GENERICCLIENT_H
+#define GENERICCLIENT_H
 
-#include "MCNewClientRequest.h"
-#include "MCClientID.h"
-#include "iMosquittoClient.h"
-#include "MqttMessage.h"
-#include "MCMessage.h"
-#include "MCRequestAck.h"
-#include "GenericClient.h"
+#include <string>
+#include "FleXdIPCMsg.h"
 
-namespace rsm {
-    namespace msq {
-        namespace com {
+#define MCM_JSON_MSG_TYPE "/msgType"
+#define MCM_JSON_MSG_COUNTER "/msgCounter"
+#define MCM_JSON_PAYLOAD_CRC "/payloadCRC"
+#define MCM_JSON_TIME_STAMP "/timeStamp"
+#define MCM_JSON_FROM "/from"
+#define MCM_JSON_TO "/to"
+#define MCM_JSON_PAYLOAD "/payload"
 
-            class MCClient : public rsm::conn::mqtt::iMosquittoClient {
-            public:
-                explicit MCClient(const MCNewClientRequest& request);
-                virtual ~MCClient();
+namespace flexd {
+    namespace gen {
 
-                bool send(const MCMessage& message);
-                bool subscribe();
-                bool unsubscribe();
-
-                const MCClientID& getClientID() const;
-
-                MCClient(const MCClient& orig) = delete;
-                MCClient& operator= (const MCClient& orig) = delete;
-
-            protected:
-                virtual void onMessage(const rsm::conn::mqtt::MqttMessage& msg) override;
-                virtual void onRecon() override;
-
-            private:
-                MCClientID m_clientID;
-                std::function<void(uint32_t, const std::string&)> m_onMessage;
-                std::function<void(std::shared_ptr<flexd::gen::GenericClient::Header>, uint32_t, const std::string&)> m_onGenMessage;
-
+        class GenericClient{
+        public:
+            struct Header {
+                uint8_t msgType;
+                uint8_t counter;
+                uint16_t crc; 
+                uint32_t timeStamp; 
+                uint32_t from; 
+                uint32_t to; 
             };
-        }
+        public:
+            GenericClient ();
+            virtual ~GenericClient();
+           
+            std::shared_ptr<flexd::icl::ipc::FleXdIPCMsg> msgWrap(std::shared_ptr<GenericClient::Header> header, const std::string& payload);
+            std::string msgUnwrap(const std::shared_ptr<flexd::icl::ipc::FleXdIPCMsg>& msg);
+            uint32_t getTimestamp();
+
+        public:
+            std::shared_ptr<GenericClient::Header> m_header;
+            uint8_t m_counter;
+        };
+
     }
 }
-#endif /* MCCLIENT_H */
-
+#endif //GENERICCLIENT_H

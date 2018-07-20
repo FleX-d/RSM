@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "IPCClient.h"
 #include "JsonObj.h"
 #include "FleXdIPCMsgTypes.h"
+#include "GenericClient.h"
 
 namespace rsm {
     namespace msq {
@@ -66,11 +67,7 @@ namespace rsm {
                 return m_manager.publish(message);
             }
 
-            void IPCClient::receiveCreateClientMsg(uint32_t ID,
-                    const std::string& ExternID, const std::string& Requester,
-                    const std::string& IPAddress, const std::string& Topic,
-                    uint8_t Direction, bool CleanSession,
-                    int Port, int QOS, int KeepAlive)
+            void IPCClient::receiveCreateClientMsg(uint32_t ID, const std::string& ExternID, const std::string& Requester, const std::string& IPAddress, const std::string& Topic, uint8_t Direction, bool CleanSession, int Port, int QOS, int KeepAlive)
             {
                 DirectionType::Enum direction;
                 if(Direction == DirectionType::BOTH)
@@ -82,7 +79,7 @@ namespace rsm {
                 } else {
                     direction = DirectionType::OUT;
                 }
-                rsm::msq::com::MCNewClientRequest request([this](uint32_t id, const std::string& m){this->sendBackMsg(id, m);}, ID, ExternID, Requester, IPAddress, Topic, direction, CleanSession, Port, QOS, KeepAlive);
+                rsm::msq::com::MCNewClientRequest request([this](uint32_t id, const std::string& m){this->sendBackMsg(id,m);}, ID, ExternID, Requester, IPAddress, Topic, direction, CleanSession, Port, KeepAlive);
                 MCRequestAck ack = this->addClient(request);
                 if (ack.getAck() == RequestAckType::Success)
                 {
@@ -134,6 +131,85 @@ namespace rsm {
                     } else
                     {
                         sendRequestAckMsg(ID, 0);
+                    }
+                }
+            }
+            
+            void IPCClient::receiveCreateClientMsg(std::shared_ptr<GenericClient::Header> header, uint32_t ID, const std::string& ExternID, const std::string& Requester, const std::string& IPAddress, const std::string& Topic, uint8_t Direction, bool CleanSession, int Port, int QOS, int KeepAlive)
+            {
+                DirectionType::Enum direction;
+                if(Direction == DirectionType::BOTH)
+                {
+                    direction = DirectionType::BOTH;
+                } else if (Direction == DirectionType::IN)
+                {
+                    direction = DirectionType::IN;
+                } else {
+                    direction = DirectionType::OUT;
+                }
+                rsm::msq::com::MCNewClientRequest request([this](std::shared_ptr<GenericClient::Header> header, uint32_t id, const std::string& m){this->sendBackMsg(header,id,m);}, ID, ExternID, Requester, IPAddress, Topic, direction, CleanSession, Port, KeepAlive);
+                
+                MCRequestAck ack = this->addClient(request);
+                std::shared_ptr<flexd::gen::GenericClient::Header> headerToSend = std::make_shared<flexd::gen::GenericClient::Header>();
+                headerToSend->from = getMyID();
+                headerToSend->to = header->from;
+                
+                if (ack.getAck() == RequestAckType::Success)
+                {
+                    sendRequestAckMsg(std::move(headerToSend), header->from, 1);
+                } else if (ack.getAck() == RequestAckType::Fail)
+                {
+                    sendRequestAckMsg(std::move(headerToSend), header->from, 0);
+                } else if (ack.getAck() == RequestAckType::ClientExist){
+                    sendRequestAckMsg(std::move(headerToSend), header->from, 2);
+                }
+            }
+            
+            void IPCClient::receiveOperationMsg(std::shared_ptr<GenericClient::Header> header, uint32_t ID, const std::string& Requester, uint8_t Operation)
+            {
+                std::shared_ptr<flexd::gen::GenericClient::Header> headerToSend = std::make_shared<flexd::gen::GenericClient::Header>();
+                headerToSend->from = getMyID();
+                headerToSend->to = header->from;
+                if(Operation == OperationRequestType::Subscribe)
+                {
+                    MCOperationRequest request(header->from, Requester, OperationRequestType::Subscribe);
+                    MCRequestAck ack = this->sendRequest(request);
+                    if(ack.getAck() == RequestAckType::Success)
+                    {
+                        sendRequestAckMsg(std::move(headerToSend), header->from, 1);
+                    } else
+                    {
+                        sendRequestAckMsg(std::move(headerToSend), header->from, 0);
+                    }
+                } else if (Operation == OperationRequestType::Unsubscribe)
+                {
+                    MCOperationRequest request(header->from, Requester, OperationRequestType::Unsubscribe);
+                    MCRequestAck ack = this->sendRequest(request);
+                    if(ack.getAck() == RequestAckType::Success)
+                    {
+                        sendRequestAckMsg(std::move(headerToSend), header->from, 1);
+                    } else
+                    {
+                        sendRequestAckMsg(std::move(headerToSend), header->from, 0);
+                    }
+                }
+            }
+            
+            void IPCClient::receivePublishMsg(std::shared_ptr<GenericClient::Header> header, uint32_t ID, const std::string& Topic, const std::string& Requester, const std::string& PayloadMsg)
+            {
+                std::shared_ptr<flexd::gen::GenericClient::Header> headerToSend = std::make_shared<flexd::gen::GenericClient::Header>();
+                headerToSend->from = getMyID();
+                headerToSend->to = header->from;
+                if(!Topic.empty() && !Requester.empty())
+                {
+                    MCMessage m(header->from, Topic, Requester, PayloadMsg);
+                    MCRequestAck ack = this->publish(m);
+                    if(ack.getAck() ==  RequestAckType::Success)
+                    {
+                        sendRequestAckMsg(std::move(headerToSend), header->from, 1);
+                    } else
+                    {
+                        sendRequestAckMsg(std::move(headerToSend), header->from, 0);
                     }
                 }
             }

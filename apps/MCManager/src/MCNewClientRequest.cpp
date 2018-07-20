@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include "MCNewClientRequest.h"
+#include "GenericClient.h"
 
 
 namespace rsm {
@@ -43,10 +44,24 @@ namespace rsm {
                                  const std::string& externID, const std::string& requester, const std::string& ipAddress,
                                  const std::string& topic, const DirectionType::Enum direction, bool cleanSession, int port, int qos, int keepAlive)
             : m_onMessage(onMessage),
+              m_onGenMessage(nullptr),
               m_clientID(ID, externID, requester, topic),
               m_direction(direction),
               m_settings(ipAddress, port, qos, keepAlive, cleanSession)
             {
+            }
+            
+            MCNewClientRequest::MCNewClientRequest(std::function<void(std::shared_ptr<flexd::gen::GenericClient::Header> , uint32_t, const std::string&)> onMessage, uint32_t ID,
+                          const std::string& externID, const std::string& requester, const std::string& ipAddress,
+                          const std::string& topic, const DirectionType::Enum direction, bool cleanSession,
+                          int port, int qos, int keepAlive)
+            : m_onMessage(nullptr),
+              m_onGenMessage(onMessage),
+              m_clientID(ID, externID, requester, topic),
+              m_direction(direction),
+              m_settings(ipAddress, port, qos, keepAlive, cleanSession)
+            {
+                
             }
 
             MCNewClientRequest::~MCNewClientRequest()
@@ -89,6 +104,13 @@ namespace rsm {
             {
                 return m_onMessage;
             }
+            
+            std::function<void(std::shared_ptr<flexd::gen::GenericClient::Header>, uint32_t, const std::string&)> MCNewClientRequest::getOnGenMessage() const
+            {
+                return m_onGenMessage;
+            }
+            
+            
         }
     }
 }

@@ -43,12 +43,13 @@ namespace rsm {
 
             MCClient::MCClient(const MCNewClientRequest& request)
             : rsm::conn::mqtt::iMosquittoClient(request.getClientID().getExternalID(), request.getSettings()),
-            m_clientID(request.getClientID().getID(),
+              m_clientID(request.getClientID().getID(),
                        request.getClientID().getExternalID(),
                        request.getClientID().getRequester(),
                        request.getClientID().getTopic(),
                        request.getClientID().getUniqueID()),
-            m_onMessage(request.getOnMessage())
+              m_onMessage(request.getOnMessage()),
+              m_onGenMessage(request.getOnGenMessage())
             {
                 FLEX_LOG_TRACE("MCClient -> Create");
             }
@@ -96,7 +97,15 @@ namespace rsm {
 
             void MCClient::onMessage(const rsm::conn::mqtt::MqttMessage& msg)
             {
-                m_onMessage(this->m_clientID.getID(), msg.getMessage());
+                if(m_onMessage){
+                    m_onMessage(this->m_clientID.getID(), msg.getMessage());
+                } else {
+                    std::shared_ptr<flexd::gen::GenericClient::Header> header = std::make_shared<flexd::gen::GenericClient::Header>();
+                    header->from = 00000;
+                    header->to = m_clientID.getID();
+                    m_onGenMessage(std::move(header), m_clientID.getID(), msg.getMessage());
+                }
+                
             }
 
             void MCClient::onRecon()
