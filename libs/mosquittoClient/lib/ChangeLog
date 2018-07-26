@@ -3,15 +3,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [0.0.1] - 2018-01-02
+## [0.0.2] - 2018-05-03
 ### Added
-- Initial version [Adrian Peniak]
+- Implement FleXdLogger [Matus Bodorik]
 
 ### Changed
 - None
 
 ### Removed
 - None
+
 
 ## [0.0.2] - 2018-01-18
 ### Added
@@ -23,12 +24,16 @@ All notable changes to this project will be documented in this file.
 ### Removed
 - None
 
-## [0.0.2] - 2018-05-03
+
+## [0.0.1] - 2018-01-02
 ### Added
-- Implement FleXdLogger [Matus Bodorik]
+- Initial version [Adrian Peniak]
 
 ### Changed
 - None
 
 ### Removed
 - None
+
+
+

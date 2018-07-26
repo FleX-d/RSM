@@ -2,6 +2,18 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+# [0.0.1] - 2018-07-23
+### Added
+- Class GenericClient - which provides methods for serialize/deserialize data to pure json message [Matus Bodorik]
+
+### Changed
+- Code refactoring [Matus Bodorik]
+- Implement generic methods to IPCClient
+
+### Removed
+- None
+
+
 ## [0.0.1] - 2018-06-29
 ### Added
 - None

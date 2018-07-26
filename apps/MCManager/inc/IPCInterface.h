@@ -50,7 +50,7 @@ namespace flexd {
 	public:
 	    IPCInterface (flexd::icl::ipc::FleXdEpoll& poller);
             virtual ~IPCInterface();
-           void sendRequestAckMsg(std::shared_ptr<GenericClient::Header> header,uint32_t ID, uint8_t RequestAck);
+            void sendRequestAckMsg(std::shared_ptr<GenericClient::Header> header,uint32_t ID, uint8_t RequestAck);
             void sendBackMsg(std::shared_ptr<GenericClient::Header> header,uint32_t ID, const std::string& PayloadMsg);
             void sendRequestAckMsg(uint32_t ID, uint8_t RequestAck);
             void sendBackMsg(uint32_t ID, const std::string& PayloadMsg);
@@ -60,7 +60,7 @@ namespace flexd {
             void send(std::shared_ptr<flexd::icl::ipc::FleXdIPCMsg> Msg, uint32_t PeerID);
             virtual void receiveMsg(flexd::icl::ipc::pSharedFleXdIPCMsg Msg) override;
 	    
-           virtual void receiveCreateClientMsg(std::shared_ptr<GenericClient::Header> header, uint32_t ID, const std::string& ExternID, const std::string& Requester, const std::string& IPAddress, const std::string& Topic, uint8_t Direction, bool CleanSession, int Port, int QOS, int KeepAlive) = 0;
+            virtual void receiveCreateClientMsg(std::shared_ptr<GenericClient::Header> header, uint32_t ID, const std::string& ExternID, const std::string& Requester, const std::string& IPAddress, const std::string& Topic, uint8_t Direction, bool CleanSession, int Port, int QOS, int KeepAlive) = 0;
             virtual void receiveOperationMsg(std::shared_ptr<GenericClient::Header> header, uint32_t ID, const std::string& Requester, uint8_t Operation) = 0;
             virtual void receivePublishMsg(std::shared_ptr<GenericClient::Header> header, uint32_t ID, const std::string& Topic, const std::string& Requester, const std::string& PayloadMsg) = 0;
             virtual void receiveCreateClientMsg(uint32_t ID, const std::string& ExternID, const std::string& Requester, const std::string& IPAddress, const std::string& Topic, uint8_t Direction, bool CleanSession, int Port, int QOS, int KeepAlive) = 0;

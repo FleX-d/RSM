@@ -1,4 +1,3 @@
-
 /*
 Copyright (c) 2017, Globallogic s.r.o.
 All rights reserved.
@@ -26,37 +25,58 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * File:   IPCClient.h
+/* 
+ * File:   GenericClient.h
+ * 
  * Author: Matus Bodorik
- *
- * Created on Jul 04, 2018, 11:00 AM
+ * 
+ * Created on July 18, 2018, 15:07 
  */
 
-#include "GenericClient.h"
-#include "JsonObj.h"
+#include <string>
 #include "FleXdIPCMsg.h"
+#include "JsonObj.h"
 #include "FleXdIPCMsgTypes.h"
+#include <chrono>
 #include <vector>
 #include <ctime>
-#include <chrono>
 
+
+#define MCM_JSON_MSG_TYPE "/msgType"
+#define MCM_JSON_MSG_COUNTER "/msgCounter"
+#define MCM_JSON_PAYLOAD_CRC "/payloadCRC"
+#define MCM_JSON_TIME_STAMP "/timeStamp"
+#define MCM_JSON_FROM "/from"
+#define MCM_JSON_TO "/to"
+#define MCM_JSON_PAYLOAD "/payload"
 
 namespace flexd {
-    namespace gen {
+    namespace test {
         
+        class GenericClient{
+        public:
+            struct Header {
+                uint8_t msgType;
+                uint8_t counter;
+                uint16_t crc; 
+                uint32_t timeStamp; 
+                uint32_t from; 
+                uint32_t to; 
+            };
+            
+            std::shared_ptr<GenericClient::Header> m_header;
+            uint8_t m_counter;
 
-
-        GenericClient::GenericClient()
+            
+        GenericClient()
         : m_header(std::make_shared<Header>()), 
           m_counter(0)
         {
         }
 
-        GenericClient::~GenericClient() {
-        }
+        ~GenericClient() {}
         
-        std::shared_ptr<flexd::icl::ipc::FleXdIPCMsg> GenericClient::msgWrap(std::shared_ptr<GenericClient::Header> header, const std::string& payload) {
+        std::shared_ptr<flexd::icl::ipc::FleXdIPCMsg> msgWrap(std::shared_ptr<GenericClient::Header> header, const std::string& payload) {
             flexd::icl::JsonObj json;
 
             json.add<uint8_t>(MCM_JSON_MSG_TYPE, 2);
@@ -72,8 +92,7 @@ namespace flexd {
             return std::make_shared<flexd::icl::ipc::FleXdIPCMsg>(IPC_MSG_HEADER_PARAM_TYPE_MSG_TYPE, IPC_MSG_HEADER_IN_PAYLOAD_FLAG, std::move(msgPayload));
         }
 
-        std::string GenericClient::msgUnwrap(const std::shared_ptr<flexd::icl::ipc::FleXdIPCMsg>& msg) {
-            //TODO returns only payload, should return whole message
+        std::string msgUnwrap(const std::shared_ptr<flexd::icl::ipc::FleXdIPCMsg>& msg) {
             if(msg->getHeaderParamType() == IPC_MSG_HEADER_PARAM_TYPE_MSG_TYPE && msg->getHeaderParam() == IPC_MSG_HEADER_IN_PAYLOAD_FLAG) {
                 std::string strJson(msg->getPayload().begin(), msg->getPayload().end());
                 flexd::icl::JsonObj json(strJson);
@@ -125,11 +144,12 @@ namespace flexd {
         }
         
         
-        uint32_t GenericClient::getTimestamp() {
+        uint32_t getTimestamp() {
             std::chrono::time_point<std::chrono::system_clock> p;
             p = std::chrono::system_clock::now();
             std::time_t time = std::chrono::duration_cast<std::chrono::milliseconds>(p.time_since_epoch()).count();
             return static_cast<uint32_t> (time);
         }
+    };
     }
 }

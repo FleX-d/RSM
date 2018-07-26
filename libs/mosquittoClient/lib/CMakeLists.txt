@@ -26,6 +26,14 @@ SET(privateSources
     src/MqttMessage.cpp
 )
 
+include(FindPkgConfig)
+find_package(PkgConfig REQUIRED)
+pkg_search_module(FLEXD_LOGGER REQUIRED fleXdLoggerClient)
+if (FLEXD_LOGGER_FOUND)
+    message(STATUS "FLEXD_LOGGER libs was found: " ${FLEXD_LOGGER_LIBRARIES})
+    message(STATUS "FLEXD_LOGGER inc was found: " ${FLEXD_LOGGER_INCLUDE_DIRS})
+endif (FLEXD_LOGGER_FOUND)
+
 add_library(${PROJECT_NAME} SHARED ${privateSources})
 set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}
@@ -39,11 +47,12 @@ if (${MOSQUITTOPP_LIBRARY})
 endif (${MOSQUITTOPP_LIBRARY})
 
 target_include_directories(${PROJECT_NAME} PUBLIC inc/public)
-target_include_directories(${PROJECT_NAME} PRIVATE inc/)
+target_include_directories(${PROJECT_NAME} PRIVATE inc/ ${FLEXD_LOGGER_INCLUDE_DIRS})
 target_compile_options(${PROJECT_NAME} PUBLIC -std=c++14 -Wall -Wfloat-conversion)
 
 target_link_libraries(${PROJECT_NAME}
     ${MOSQUITTOPP_LIBRARY}
+    ${FLEXD_LOGGER_LIBRARIES}
 )
 
 SET(mosquittoClientPublicInc "${mosquittoClient_SOURCE_DIR}/inc/public" PARENT_SCOPE)

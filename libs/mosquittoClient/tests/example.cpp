@@ -42,44 +42,58 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "iMosquittoClient.h"
 #include "MosquittoSetting.h"
 
-class Client : public rsm::conn::mqtt::iMosquittoClient 
-{
-    public:
-        Client(const rsm::conn::mqtt::mqttStr_t& id, const rsm::conn::mqtt::MosquittoSetting& settings)
-        : iMosquittoClient(id, settings) 
-        {
-        }
+namespace flexd{
+    namespace test{
 
-        virtual ~Client() 
+        class Client : public rsm::conn::mqtt::iMosquittoClient 
         {
-        }
-        
-        
-        virtual void onMessage(const rsm::conn::mqtt::MqttMessage& msg) override 
-        {
-            std::cout << "Client get message ... " << msg.getMessage() << "\n";
-        }
-        
-        void onRecon() override;
+            public:
+                Client(const rsm::conn::mqtt::mqttStr_t& id, const rsm::conn::mqtt::MosquittoSetting& settings)
+                : rsm::conn::mqtt::iMosquittoClient(id, settings) 
+                {
+                }
 
-};
+                virtual ~Client() 
+                {
+                }
+        
+        
+                virtual void onMessage(const rsm::conn::mqtt::MqttMessage& msg) override 
+                {
+                    std::cout << "Client get message ... " << msg.getMessage() << "\n";
+                }
+        
+                void onRecon() override
+                {
+                }
+                
+        };
+
+    }
+}
 
 int main(int argc, char** argv) {
     
     std::string topic = "test";
     rsm::conn::mqtt::MosquittoSetting setting("127.0.0.1");
     
-    auto client1 = std::make_shared<Client>("client1", setting);
-    auto client2 = std::make_shared<Client>("client2", setting);
+    auto client1 = std::make_shared<flexd::test::Client>("client1", setting);
+    auto client2 = std::make_shared<flexd::test::Client>("client2", setting);
+    std::this_thread::sleep_for(std::chrono::seconds(5));    
     
-    client1->subscribeTopic(topic);
-    std::this_thread::sleep_for(std::chrono::seconds(1));    
     
-    client2->publishMessage(rsm::conn::mqtt::MqttMessage(topic , " Communication is working! "));
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::cout << "Client1 Subscribe Topic" << std::endl;
+    int temp = client1->subscribeTopic(topic);
+    std::this_thread::sleep_for(std::chrono::seconds(5));    
     
-    client1->unsubscribeTopic(topic);
-
+    if(temp == 0){
+        std::cout << "Client2 Publish Message" << std::endl;
+        client2->publishMessage(rsm::conn::mqtt::MqttMessage(topic , " Communication is working! "));
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+    }
+        
+    while(true){}
+    
     return 0;
 }
 
