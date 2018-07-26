@@ -53,6 +53,7 @@ int main(int argc, char** argv)
         if(client.initGenericServer()){
             poller.loop();
         }
+        FLEX_LOG_UNINIT();
     }
     return 0;
 }
