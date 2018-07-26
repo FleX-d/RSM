@@ -5,11 +5,14 @@ All notable changes to this project will be documented in this file.
 
 ## [0.0.1] - 2018-07-23
 ### Added
-- Initial version of examples [Matus Bodorik]
+- Example of Application Monitor which is creating Client and Subscribe specific topic [Matus Bodorik]
+- Example of Application Sender which is creating Client and Publish messages to specific topic [Matus Bodorik]
+- GenericClient.h and IPCInterface.h - generic interface for this applications [Matus Bodorik]
 
 ### Changed
 - None
 
 ### Removed
 - None
+
 
