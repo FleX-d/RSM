@@ -7,6 +7,16 @@ All notable changes to this project will be documented in this file.
 - None
 
 ### Changed
+- Changed directory structure and updated CMakeLists [Martin Strenger]
+
+### Removed
+- None
+
+## [0.0.1] - 2018-07-26
+### Added
+- None
+
+### Changed
 - Implementation of FLEX_LOG_UNINIT macro [Martin Strenger]
 
 ### Removed

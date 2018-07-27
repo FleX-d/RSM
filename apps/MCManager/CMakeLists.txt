@@ -96,3 +96,11 @@ target_compile_options(${PROJECT_NAME} PUBLIC -std=c++14 -Wall -Wfloat-conversio
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 
 add_dependencies(${PROJECT_NAME} mosquittoClient)
+
+if(${ENABLE_TESTS})
+    add_subdirectory(tests)
+endif(${ENABLE_TESTS})
+
+if(${ENABLE_EXAMPLES})
+    add_subdirectory(examples)
+endif(${ENABLE_EXAMPLES})

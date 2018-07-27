@@ -18,7 +18,14 @@ option(
     "Build tests?"
     OFF
 )
+option(
+    ENABLE_EXAMPLES
+    "Build examples?"
+    OFF
+)
+
 message(STATUS "option ENABLE_TESTS=" ${ENABLE_TESTS})
+message(STATUS "option ENABLE_EXAMPLES=" ${ENABLE_EXAMPLES})
 
 add_subdirectory(libs)
 add_subdirectory(apps)
