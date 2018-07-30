@@ -33,9 +33,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include "HTTPUploadClient.h"
-#include "curl/curl.h"
-#include "FleXdLogger.h"
 #include "TMUtility.h"
+#include <curl/curl.h>
+#include <FleXdLogger.h>
+#include <FleXdIPCCommon.h>
 #include <iostream>
 #include <fstream>
 #include <math.h>
@@ -125,7 +126,7 @@ namespace flexd {
 
                 void HTTPUploadClient::uploadFile(const std::string& url, const std::string& path)
                 {
-                    if (checkIfFileExist(path))
+                    if (flexd::icl::ipc::checkIfFileExist(path))
                     {
                         FLEX_LOG_TRACE("HTTPUploadClient::uploadFile() -> HTTP Upload transfer start");
                         double speedUpload, totalTime;
@@ -170,25 +171,11 @@ namespace flexd {
                     }
                 }
 
-                bool HTTPUploadClient::checkIfFileExist(const std::string& path)
-                {
-                    std::fstream file(path);
-                    if (file.good())
-                    {
-                        FLEX_LOG_TRACE("HTTPUploadClient::checkIfFileExist() -> Path is valid!");
-                        return true;
-                    } else
-                    {
-                        FLEX_LOG_WARN("HTTPUploadClient::checkIfFileExist() -> Path is invalid!");
-                        return false;
-                    }
-                }
 
                 long HTTPUploadClient::getFileSize(std::string filename)
                 {
                     struct stat stat_buf;
-                    int rc = stat(filename.c_str(), &stat_buf);
-                    return rc == 0 ? stat_buf.st_size : -1;
+                    return stat(filename.c_str(), &stat_buf) == 0 ? stat_buf.st_size : -1;
                 }
 
             } //namespace http

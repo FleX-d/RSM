@@ -36,8 +36,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef ITRANSFERREQUEST_H
 #define ITRANSFERREQUEST_H
 
-#include <string>
 #include "TransferTypes.h"
+#include <string>
 
 namespace flexd {
     namespace rsm {

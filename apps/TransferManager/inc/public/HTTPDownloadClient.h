@@ -35,9 +35,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef HTTPDOWNLOADCLIENT_H
 #define HTTPDOWNLOADCLIENT_H
 
-#include "curl/curl.h"
-#include "string"
+
 #include "HTTPTransferClient.h"
+#include <curl/curl.h>
 
 namespace flexd {
     namespace rsm {

@@ -34,9 +34,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include "TMUtility.h"
-#include "FleXdLogger.h"
-#include "curl/curl.h"
 #include "iTransferClient.h"
+#include <FleXdLogger.h>
+#include <curl/curl.h>
 
 namespace flexd {
     namespace rsm {

@@ -33,8 +33,7 @@ namespace flexd {
 
             bool TransferManager::addTransfer(const iTransferRequest& request)
             {
-                std::shared_ptr<iTransferClient> client= flexd::rsm::conn::TMFactory::createInstance(request, m_poller);
-                m_list.push(client);
+                m_list.push(flexd::rsm::conn::TMFactory::createInstance(request, m_poller));
                 FLEX_LOG_TRACE("TransferManager::addTransfer() -> Transfer add Success.");
                 return true;
             }
@@ -44,8 +43,7 @@ namespace flexd {
                 if (!m_list.empty())
                 {
                     FLEX_LOG_TRACE("TransferManager::runTransfer() -> Transfer start run.");
-                    std::shared_ptr<iTransferClient> client = m_list.back();
-                    client->doTransfer();                
+                    m_list.back()->doTransfer();                
                     return true;
                 } else {
                     FLEX_LOG_WARN("TransferManager::runTransfer() -> Transfer list empty.");
@@ -58,8 +56,7 @@ namespace flexd {
                 if (!m_list.empty())
                 {
                     FLEX_LOG_TRACE("TransferManager::abortTransfer() -> Abort transfer start!");
-                    std::shared_ptr<iTransferClient> client = m_list.back();
-                    client->abortTransfer();
+                    m_list.back()->abortTransfer();
                     return true;
                 } else {
                     FLEX_LOG_WARN("TransferManager::abortTransfer() -> Transfer list empty.");
@@ -72,8 +69,7 @@ namespace flexd {
                 if (!m_list.empty())
                 {
                     FLEX_LOG_TRACE("TransferManager::getTransferInfo() -> Transfer Info");
-                    std::shared_ptr<iTransferClient> client = m_list.back();
-                    client->getTransferStatus();
+                    m_list.back()->getTransferStatus();
                     return true;
                 } else {
                     FLEX_LOG_WARN("TransferManager::getTransferInfo() -> Transfer list empty.");

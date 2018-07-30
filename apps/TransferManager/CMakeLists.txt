@@ -59,16 +59,25 @@ if (FLEXD_LOGGER_FOUND)
     message(STATUS "FLEXD_LOGGER inc was found: " ${FLEXD_LOGGER_INCLUDE_DIRS})
 endif (FLEXD_LOGGER_FOUND)
 
+include(FindPkgConfig)
+find_package(PkgConfig REQUIRED)
+pkg_search_module(FLEXD_IPC_COMMON REQUIRED fleXdIPCCommon)
+if (FLEXD_IPC_COMMON_FOUND)
+    message(STATUS "FLEXD_IPC_COMMON libs was found: " ${FLEXD_IPC_COMMON_LIBRARIES})
+    message(STATUS "FLEXD_IPC_COMMON inc was found: " ${FLEXD_IPC_COMMON_INCLUDE_DIRS})
+endif (FLEXD_IPC_COMMON_FOUND)
+
 add_executable(${PROJECT_NAME} ${privateSources} ${privateHeaders} ${publicHeaders})
 target_link_libraries( ${PROJECT_NAME}
     ${FLEXD_LOGGER_LIBRARIES}
+    ${FLEXD_IPC_COMMON_LIBRARIES}
     ${fleXdEpoll_LIBRARIES}
     pthread
     curl
 )
 target_compile_options(${PROJECT_NAME} PUBLIC -std=c++14 -Wall -Wfloat-conversion)
 target_include_directories(${PROJECT_NAME} PUBLIC inc/public ${fleXdEpoll_INCLUDE_DIRS})
-target_include_directories(${PROJECT_NAME} PRIVATE inc/ ${FLEXD_LOGGER_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PRIVATE inc/ ${FLEXD_LOGGER_INCLUDE_DIRS} ${FLEXD_IPC_COMMON_INCLUDE_DIRS})
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 
 if(${ENABLE_TESTS})

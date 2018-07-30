@@ -33,10 +33,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include "FTPDownloadClient.h"
-#include "curl/curl.h"
 #include "TMUtility.h"
-#include "FleXdLogger.h"
-#include "string"
+#include <curl/curl.h>
+#include <FleXdLogger.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -85,7 +84,7 @@ namespace flexd {
                 {
                     if (m_request.getTransferType() == TransferType::Enum::FTPDownload)
                     {
-                        if (checkURL(m_request.getURL()) == 200)
+                        if (checkURL(m_request.getURL()) == FLEXD_TC_URL_SUCCESS_200_CODE)
                         {
                             FLEX_LOG_TRACE("FTPDownloadClient::getTransferStatus() -> FTP Download transfer status: ");
                             switch (m_status)
@@ -129,7 +128,7 @@ namespace flexd {
 
                 void FTPDownloadClient::downloadFromFTPtoFile(const std::string& url, const std::string& path)
                 {
-                    if (checkURL(url) == 200 && m_request.getTransferType() == TransferType::Enum::FTPDownload)
+                    if (checkURL(url) == FLEXD_TC_URL_SUCCESS_200_CODE && m_request.getTransferType() == TransferType::Enum::FTPDownload)
                     {
                         FLEX_LOG_TRACE("FTPDownloadClient::downloadFromFTPtoFile() -> FTP Download transfer start");
                         double speedDownload, totalTime;
@@ -177,11 +176,10 @@ namespace flexd {
                 {
                     long response_code = 0;
                     curl_easy_setopt(m_curl, CURLOPT_URL, url.c_str());
-                    CURLcode res = curl_easy_perform(m_curl);
-                    if (res == CURLE_OK)
+                    if (curl_easy_perform(m_curl) == CURLE_OK)
                     {
                         curl_easy_getinfo(m_curl, CURLINFO_RESPONSE_CODE, &response_code);
-                        if (response_code == 200)
+                        if (response_code == FLEXD_TC_URL_SUCCESS_200_CODE)
                         {
                             FLEX_LOG_TRACE("FTPDownloadClient::checkURL() -> Check URL Success: ", response_code);
                             return response_code;

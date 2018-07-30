@@ -33,11 +33,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include "HTTPDownloadClient.h"
-#include "FleXdEpoll.h"
-#include "FleXdLogger.h"
 #include "TMUtility.h"
-#include "curl/curl.h"
-#include "string"
+#include <FleXdEpoll.h>
+#include <FleXdLogger.h>
+#include <curl/curl.h>
 #include <sys/eventfd.h>
 #include <iostream>
 #include <fstream>
@@ -88,7 +87,7 @@ namespace flexd {
                 {
                     if (m_request.getTransferType() == TransferType::Enum::HTTPDownload)
                     {
-                        if (checkURL(m_request.getURL()) == 200)
+                        if (checkURL(m_request.getURL()) == FLEXD_TC_URL_SUCCESS_200_CODE)
                         {
                             FLEX_LOG_TRACE("HTTPDownloadClient::getTransferStatus() -> HTTP Download transfer status: ");
                             switch (m_status)
@@ -132,7 +131,7 @@ namespace flexd {
 
                 void HTTPDownloadClient::downloadFromURLtoFile(const std::string& url, const std::string& path)
                 {
-                    if (checkURL(url) == 200)
+                    if (checkURL(url) == FLEXD_TC_URL_SUCCESS_200_CODE)
                     {
                         double speed_download, total_time;
                         FILE *file;
@@ -230,11 +229,10 @@ namespace flexd {
                 {
                     long response_code = 0;
                     curl_easy_setopt(m_curl, CURLOPT_URL, url.c_str());
-                    CURLcode res = curl_easy_perform(m_curl);
-                    if (res == CURLE_OK)
+                    if (curl_easy_perform(m_curl) == CURLE_OK)
                     {
                         curl_easy_getinfo(m_curl, CURLINFO_RESPONSE_CODE, &response_code);
-                        if (response_code != 200)
+                        if (response_code != FLEXD_TC_URL_SUCCESS_200_CODE)
                         {
                             FLEX_LOG_ERROR("HTTPDownloadClient::checkURL() -> Check URL Error: ", response_code);
                             return response_code;

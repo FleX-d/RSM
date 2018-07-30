@@ -44,6 +44,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <thread>
 #include <memory>
 
+#define FLEXD_TC_URL_SUCCESS_200_CODE 200
+#define FLEXD_TC_URL_ERROR_404_CODE 404
+
 namespace flexd {
     namespace rsm {
         namespace conn {

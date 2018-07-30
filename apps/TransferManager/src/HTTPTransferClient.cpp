@@ -32,8 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * Created on December 15, 2017, 12:19 PM
  */
 
-#include "FleXdLogger.h"
 #include "HTTPTransferClient.h"
+#include <FleXdLogger.h>
 
 namespace flexd {
     namespace rsm {

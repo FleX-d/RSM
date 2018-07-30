@@ -71,6 +71,14 @@ if (FLEXD_LOGGER_FOUND)
     message(STATUS "FLEXD_LOGGER inc was found: " ${FLEXD_LOGGER_INCLUDE_DIRS})
 endif (FLEXD_LOGGER_FOUND)
 
+include(FindPkgConfig)
+find_package(PkgConfig REQUIRED)
+pkg_search_module(FLEXD_IPC_COMMON REQUIRED fleXdIPCCommon)
+if (FLEXD_IPC_COMMON_FOUND)
+    message(STATUS "FLEXD_IPC_COMMON libs was found: " ${FLEXD_IPC_COMMON_LIBRARIES})
+    message(STATUS "FLEXD_IPC_COMMON inc was found: " ${FLEXD_IPC_COMMON_INCLUDE_DIRS})
+endif (FLEXD_IPC_COMMON_FOUND)
+
 include_directories(
 ${TransferManager_SOURCE_DIR}/inc/public
 ${TransferManager_SOURCE_DIR}/inc
@@ -78,6 +86,7 @@ ${FLEXD_IPC_EPOLL_INCLUDE_DIRS}
 ${GTEST_INCLUDE_DIRS}
 ${GMOCK_INCLUDE_DIRS}
 ${FLEXD_LOGGER_INCLUDE_DIRS}
+${FLEXD_IPC_COMMON_INCLUDE_DIRS}
 )
 
 set (CMAKE_CXX_FLAGS "-std=c++14 -Wall -Wfloat-conversion")
@@ -85,6 +94,7 @@ add_executable(${PROJECT_NAME} main.cpp ${privateHeaders} ${privateSources})
 target_compile_options(${PROJECT_NAME} PUBLIC -std=c++14 -Wall -Wfloat-conversion)
 target_link_libraries(${PROJECT_NAME}
     ${FLEXD_IPC_EPOLL_LIBRARIES}
+     ${FLEXD_IPC_COMMON_LIBRARIES}
     ${GTEST_LIBRARIES}
     ${GMOCK_LIBRARIES}
     ${FLEXD_LOGGER_LIBRARIES}

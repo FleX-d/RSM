@@ -33,9 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include "iTransferClient.h"
-#include "FleXdLogger.h"
+#include <FleXdLogger.h>
 #include <curl/curl.h>
-
 #include <unistd.h>
 #include <functional>
 
@@ -88,6 +87,7 @@ namespace flexd {
                 if(m_thread && m_thread->joinable())
                 {
                     m_thread->join();
+                    m_thread.release();
                     FLEX_LOG_TRACE("iTransferClient::onEvent() -> Join Success.");
                 }
             }

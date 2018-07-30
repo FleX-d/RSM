@@ -32,16 +32,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * Created on December 15, 2017, 12:19 PM
  */
 
-#include <cstdlib>
-#include <iostream>
 #include "iTransferRequest.h"
 #include "HTTPDownloadClient.h"
 #include "TransferTypes.h"
 #include "TransferManager.h"
-#include "FleXdLogger.h"
-#include "FleXdEvent.h"
+#include <FleXdLogger.h>
+#include <FleXdEvent.h>
 #include <thread>
 #include <chrono>
+#include <cstdlib>
+#include <iostream>
 
 int main(int argc, char** argv) {
 

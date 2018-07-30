@@ -32,11 +32,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * Created on January 4, 2018, 9:48 AM
  */
 
-#include "curl/curl.h"
-#include "string"
-#include "FleXdLogger.h"
 #include "TMUtility.h"
 #include "FTPUploadClient.h"
+#include <curl/curl.h>
+#include <FleXdLogger.h>
+#include <FleXdIPCCommon.h>
 #include <fstream>
 #include <math.h>
 #include <sys/stat.h>
@@ -128,7 +128,7 @@ namespace flexd {
                 {
                     if (m_request.getTransferType() == TransferType::FTPUpload)
                     {
-                        if (checkIfFileExist(path))
+                        if (flexd::icl::ipc::checkIfFileExist(path))
                         {
                             FLEX_LOG_TRACE("FTPUploadClient::uploadFile() -> FTP Upload transfer start");
                             double speedUpload, totalTime;
@@ -182,23 +182,9 @@ namespace flexd {
                 long FTPUploadClient::getFileSize(std::string filename)
                 {
                     struct stat stat_buf;
-                    int rc = stat(filename.c_str(), &stat_buf);
-                    return rc == 0 ? stat_buf.st_size : -1;
+                    return stat(filename.c_str(), &stat_buf) == 0 ? stat_buf.st_size : -1;
                 }
 
-                bool FTPUploadClient::checkIfFileExist(const std::string& path)
-                {
-                    std::fstream file(path);
-                    if (file.good())
-                    {
-                        FLEX_LOG_TRACE("FTPDownloadClient::checkIfFileExist() -> Path is valid!");
-                        return true;
-                    } else
-                    {
-                        FLEX_LOG_WARN("FTPDownloadClient::checkIfFileExist() -> Path is invalid!");
-                        return false;
-                    }
-                }
 
             } //namespace ftp
         } //namespace conn

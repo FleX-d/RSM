@@ -53,7 +53,6 @@ namespace flexd {
 
                 private:
                     void uploadFile(const std::string& url, const std::string& path);
-                    bool checkIfFileExist(const std::string& path);
                     long getFileSize(std::string filename);
                 };
                 

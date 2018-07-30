@@ -24,6 +24,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /* 
  * File:   FTPUploadClient.h
  * Author: Matus Bodorik
@@ -53,7 +54,6 @@ namespace flexd {
 
                 private:
                     void uploadFile(const std::string& url, const std::string& path);
-                    bool checkIfFileExist(const std::string& path);
                     long getFileSize(std::string filename);
 
                 };
